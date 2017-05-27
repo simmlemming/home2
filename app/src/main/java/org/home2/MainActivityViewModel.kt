@@ -6,9 +6,9 @@ import android.arch.lifecycle.ViewModel
 /**
  * Created by mtkachenko on 20/05/17.
  */
-class MainActivityViewModel(val tempRepository: TempRepository) : ViewModel() {
-    var temp : LiveData<Int> = tempRepository.getTemp()
+class MainActivityViewModel(val tempRepository: RoomInfoRepository) : ViewModel() {
+    var roomInfo: LiveData<RoomInfo> = tempRepository.getRoomInfo("bedroom")
 
     @Suppress("unused")
-    constructor() : this(TempRepository())
+    constructor() : this(FakeRoomInfoRepository())
 }
