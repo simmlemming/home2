@@ -1,7 +1,7 @@
 package org.home2
 
 import android.arch.lifecycle.LiveData
-import android.arch.lifecycle.MutableLiveData
+import org.json.JSONException
 import org.json.JSONObject
 
 /**
@@ -10,7 +10,7 @@ import org.json.JSONObject
 class RoomInfoRepository(val mqtt: BaseMqtt) {
 
     fun getRoomInfo(roomName : String) : LiveData<RoomInfo> {
-        return MqttLiveData("$roomName/health")
+        return RoomInfoLiveData("$roomName/health")
     }
 
     fun getConnectionStatus() : LiveData<ConnectionState> {
@@ -25,19 +25,19 @@ class RoomInfoRepository(val mqtt: BaseMqtt) {
         mqtt.disconnect()
     }
 
-    inner class MqttLiveData(val topic : String) : MutableLiveData<RoomInfo>() {
-
-        override fun onActive() {
-            mqtt.subscribe(topic) { message -> postValue(parse(message)) }
+    inner class RoomInfoLiveData(topic : String) : BaseMqttLiveData<RoomInfo>(mqtt, topic) {
+        override fun onNewMessage(message: JSONObject) {
+            parse(message)?.let {
+                postValue(it)
+            }
         }
 
-        override fun onInactive() {
-            mqtt.unsubscribe(topic)
-        }
-
-        private fun parse(message: String): RoomInfo {
-            val info = JSONObject(message)
-            return RoomInfo("b", info.getInt("t"), info.getInt("h"))
+        private fun parse(message: JSONObject): RoomInfo? {
+            return try {
+                RoomInfo("b", message.getInt("t"), message.getInt("h"))
+            } catch (e : JSONException) {
+                null
+            }
         }
     }
 }
