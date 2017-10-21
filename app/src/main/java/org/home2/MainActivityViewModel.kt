@@ -14,6 +14,8 @@ class MainActivityViewModel(app : Application) : AndroidViewModel(app) {
     init {
         if (app is HomeApplication) {
             repo = app.mqttRoomInfoRepository
+            repo.start()
+
             room1Info = repo.getRoomInfo("nicole")
         } else {
             throw IllegalStateException("Application is not HomeApplication")
@@ -22,5 +24,9 @@ class MainActivityViewModel(app : Application) : AndroidViewModel(app) {
 
     fun getConnectionStatus() : LiveData<ConnectionState> {
         return repo.getConnectionStatus()
+    }
+
+    override fun onCleared() {
+        repo.stop()
     }
 }

@@ -24,8 +24,8 @@ class RoomMeterView : FrameLayout {
         super.onFinishInflate()
         View.inflate(context, R.layout.room_meter_view, this)
 
-        tempView = findViewById(R.id.temp) as TextView
-        humView = findViewById(R.id.hum) as TextView
+        tempView = findViewById(R.id.temp)
+        humView = findViewById(R.id.hum)
     }
 
     fun setRoomInfo(roomInfo: RoomInfo) {
