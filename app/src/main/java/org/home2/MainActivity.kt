@@ -25,7 +25,11 @@ class MainActivity : FragmentActivity() {
 
         override fun onServiceConnected(name: ComponentName?, binder: IBinder?) {
             service = (binder as HomeService.HomeBinder).service
-            service!!.motionSensorInfo.observe(this@MainActivity, Observer<NetworkResource<MotionSensorInfo>> { })
+            service!!.motionSensorInfo.observe(this@MainActivity, Observer<NetworkResource<MotionSensorInfo>> {
+                it?.let {
+                    motionSensorView.setInfo(it)
+                }
+            })
         }
     }
 

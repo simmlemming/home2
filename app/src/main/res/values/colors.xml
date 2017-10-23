@@ -3,4 +3,14 @@
     <color name="colorPrimary">#3F51B5</color>
     <color name="colorPrimaryDark">#303F9F</color>
     <color name="colorAccent">#FF4081</color>
+
+    <color name="white">#ffffff</color>
+
+    <color name="sensor_off">#BDBDBD</color>
+    <color name="sensor_connecting">#FFCC80</color>
+    <color name="sensor_ok">#A5D6A7</color>
+    <color name="sensor_alarm">#EF9A9A</color>
+
+    <color name="sensor_error">#BCAAA4</color>
+    <color name="sensor_unknown">#90CAF9</color>
 </resources>

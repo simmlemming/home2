@@ -4,20 +4,26 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:clipChildren="false"
+    android:clipToPadding="false"
     android:padding="8dp"
     tools:context="org.home2.MainActivity">
 
     <org.home2.RoomMeterView
         android:id="@+id/room_1"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content" />
+        android:layout_height="wrap_content"
+        android:background="@drawable/white_rounded_rectangle"
+        android:elevation="4dp" />
 
     <org.home2.MotionSensorView
         android:id="@+id/motion_sensor"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@id/room_1"
-        android:layout_marginTop="16dp" />
+        android:layout_marginTop="16dp"
+        android:background="@drawable/white_rounded_rectangle"
+        android:elevation="4dp" />
 
     <TextView
         android:id="@+id/connection_status"

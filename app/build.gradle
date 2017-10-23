@@ -7,7 +7,7 @@ android {
 
     defaultConfig {
         applicationId "org.home2"
-        minSdkVersion 21
+        minSdkVersion 23
         targetSdkVersion 26
         versionCode 1
         versionName "1.0"

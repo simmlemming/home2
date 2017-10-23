@@ -51,7 +51,7 @@ class Mqtt(context: Context) : BaseMqtt() {
 
     private inner class MotionSensorUpdates(val deviceName: String) : TimerTask() {
         override fun run() {
-            val status = 1
+            val status = rand.nextInt(5)
 
             val motionUpdate = JSONObject()
             motionUpdate.put("name", deviceName)
