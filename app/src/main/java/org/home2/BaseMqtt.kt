@@ -15,6 +15,7 @@ abstract class BaseMqtt {
     protected abstract fun unsubscribeInner(topic: String)
     abstract fun connect()
     abstract fun disconnect()
+    abstract fun publish(topic: String, message: String)
 
     protected val subscribeListener = IMqttMessageListener { topic, message ->
         listeners[topic]?.forEach { listener ->

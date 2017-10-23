@@ -1,10 +1,12 @@
 package org.home2.mqtt
 
 import android.content.Context
+import android.util.Log
 import org.eclipse.paho.client.mqttv3.IMqttMessageListener
 import org.eclipse.paho.client.mqttv3.MqttMessage
 import org.home2.BaseMqtt
 import org.home2.ConnectionState
+import org.home2.TAG
 import org.json.JSONObject
 import java.util.*
 
@@ -13,7 +15,6 @@ import java.util.*
  */
 
 class Mqtt(context: Context) : BaseMqtt() {
-
     private val rand = Random()
     private var timer: Timer? = null
 
@@ -29,13 +30,17 @@ class Mqtt(context: Context) : BaseMqtt() {
         timer = Timer()
         connectionStatus.value = ConnectionState.CONNECTED
         timer!!.scheduleAtFixedRate(TempSensorUpdates(), rand.nextInt(1000).toLong(), 1000L)
-        timer!!.scheduleAtFixedRate(MotionSensorUpdates("living_motion_01"), rand.nextInt(1000).toLong(), 1000L)
+        timer!!.scheduleAtFixedRate(MotionSensorUpdates("living_motion_01"), 0, 2000L)
     }
 
     override fun disconnect() {
         connectionStatus.value = ConnectionState.DISCONNECTED
         timer?.cancel()
         timer = null
+    }
+
+    override fun publish(topic: String, message: String) {
+        Log.i(TAG, "$topic <-- $message")
     }
 
     private inner class TempSensorUpdates : TimerTask() {

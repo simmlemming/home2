@@ -13,22 +13,41 @@
         android:text="Living room 01"
         android:textSize="20dp" />
 
-    <Switch
-        android:id="@+id/switcher"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/name"
-        android:layout_marginTop="8dp"
-        android:switchPadding="8dp"
-        android:text="Active"
-        android:textColor="?android:attr/textColorSecondary" />
 
     <ProgressBar
         android:id="@+id/waiting"
         style="@style/Base.Widget.AppCompat.ProgressBar"
         android:layout_width="16dp"
         android:layout_height="16dp"
-        android:layout_alignRight="@id/name"
+        android:layout_marginLeft="8dp"
+        android:layout_marginTop="8dp"
+        android:visibility="gone"
+        android:layout_toRightOf="@id/name" />
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:layout_below="@id/name"
-        android:layout_marginTop="12dp" />
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="8dp"
+        android:orientation="horizontal">
+
+        <Button
+            android:id="@+id/on"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="On" />
+
+        <Button
+            android:id="@+id/off"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Off" />
+
+        <Button
+            android:id="@+id/reset"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Reset" />
+    </LinearLayout>
 </RelativeLayout>

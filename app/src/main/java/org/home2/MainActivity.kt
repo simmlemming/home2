@@ -27,7 +27,9 @@ class MainActivity : FragmentActivity() {
             service = (binder as HomeService.HomeBinder).service
             service!!.motionSensorInfo.observe(this@MainActivity, Observer<NetworkResource<MotionSensorInfo>> {
                 it?.let {
-                    motionSensorView.setInfo(it)
+                    if (motionSensorView.name == it.data?.name) {
+                        motionSensorView.setInfo(it)
+                    }
                 }
             })
         }
@@ -44,6 +46,23 @@ class MainActivity : FragmentActivity() {
         val viewModel = ViewModelProviders
                 .of(this)
                 .get(MainActivityViewModel::class.java)
+
+
+        motionSensorView.listener = object : MotionSensorView.Listener {
+            override fun switchOn(name: String) {
+                service?.devices(DeviceFilter.withName(name))?.on()
+            }
+
+            override fun switchOff(name: String) {
+                service?.devices(DeviceFilter.withName(name))?.off()
+            }
+
+            override fun reset(name: String) {
+                service?.devices(DeviceFilter.withName(name))?.reset()
+            }
+        }
+
+        motionSensorView.name = "living_motion_01"
 
         viewModel.room1Info.observe(this, Observer<RoomInfo> { updateUi(it) })
         viewModel.getConnectionStatus().observe(this, Observer<ConnectionState> {

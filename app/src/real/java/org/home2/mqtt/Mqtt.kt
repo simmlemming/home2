@@ -19,10 +19,14 @@ private const val MQTT_QOS = 1
 
 class Mqtt(context: Context) : BaseMqtt() {
     private val mqttClient = MqttAndroidClient(context, MQTT_SERVER_URL, MQTT_CLIENT_ID)
-    private val handler = Handler()
 
+    private val handler = Handler()
     init {
         mqttClient.setCallback(HomeMqttCallback())
+    }
+
+    override fun publish(topic: String, message: String) {
+        mqttClient.publish(topic, MqttMessage(message.toByteArray()))
     }
 
     override fun subscribeInner(topic: String, listener: IMqttMessageListener) {
