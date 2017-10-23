@@ -12,11 +12,11 @@ import android.support.v4.app.FragmentActivity
 import android.widget.TextView
 
 class MainActivity : FragmentActivity() {
-    private lateinit var room1MeterView : RoomMeterView
-    private lateinit var motionSensorView : MotionSensorView
-    private lateinit var connectionStatusView : TextView
+    private lateinit var room1MeterView: RoomMeterView
+    private lateinit var motionSensorView: MotionSensorView
+    private lateinit var connectionStatusView: TextView
 
-    private var service : HomeService? = null
+    private var service: HomeService? = null
 
     private val serviceConnection = object : ServiceConnection {
         override fun onServiceDisconnected(name: ComponentName?) {
@@ -25,7 +25,7 @@ class MainActivity : FragmentActivity() {
 
         override fun onServiceConnected(name: ComponentName?, binder: IBinder?) {
             service = (binder as HomeService.HomeBinder).service
-            service!!.motionSensorInfo.observe(this@MainActivity, Observer<MotionSensorInfo> { })
+            service!!.motionSensorInfo.observe(this@MainActivity, Observer<NetworkResource<MotionSensorInfo>> { })
         }
     }
 
@@ -41,7 +41,7 @@ class MainActivity : FragmentActivity() {
                 .of(this)
                 .get(MainActivityViewModel::class.java)
 
-        viewModel.room1Info.observe(this, Observer<RoomInfo> {updateUi(it) })
+        viewModel.room1Info.observe(this, Observer<RoomInfo> { updateUi(it) })
         viewModel.getConnectionStatus().observe(this, Observer<ConnectionState> {
             connectionStatusView.text = it.toString()
         })

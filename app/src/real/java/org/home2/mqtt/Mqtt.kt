@@ -10,8 +10,6 @@ import org.home2.ConnectionState
 import org.home2.TAG
 
 
-
-
 /**
  * Created by mtkachenko on 20/05/17.
  */
@@ -27,17 +25,15 @@ class Mqtt(context: Context) : BaseMqtt() {
         mqttClient.setCallback(HomeMqttCallback())
     }
 
-    override fun subscribe(topic: String, listener: (String) -> Unit) {
+    override fun subscribeInner(topic: String, listener: IMqttMessageListener) {
         whenConnected {
             mqttClient.setBufferOpts(HomeDisconnectedBufferOptions())
-            mqttClient.subscribe(topic, MQTT_QOS, null, null) { _, message ->
-                listener.invoke(message.toString())
-            }
+            mqttClient.subscribe(topic, MQTT_QOS, null, null, listener)
         }
     }
 
-    override fun unsubscribe(topic: String) {
-        if (isConnected()) {
+    override fun unsubscribeInner(topic: String) {
+        whenConnected {
             mqttClient.unsubscribe(topic)
         }
     }
@@ -54,7 +50,7 @@ class Mqtt(context: Context) : BaseMqtt() {
         }
     }
 
-    private fun whenConnected(f : () -> Unit) {
+    private fun whenConnected(f: () -> Unit) {
         if (isConnected()) {
             f.invoke()
         } else {

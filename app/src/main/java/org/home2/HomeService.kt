@@ -16,7 +16,7 @@ private const val OUT_TOPIC = "home/out"
 class HomeService : Service() {
 
     private lateinit var mqtt: BaseMqtt
-    lateinit var motionSensorInfo: LiveData<MotionSensorInfo>
+    lateinit var motionSensorInfo: LiveData<NetworkResource<MotionSensorInfo>>
 
     override fun onCreate() {
         super.onCreate()
@@ -33,7 +33,7 @@ class HomeService : Service() {
     }
 }
 
-private class MotionSensorLiveData(mqtt: BaseMqtt, private val deviceName : String) : BaseMqttLiveData<MotionSensorInfo>(mqtt, OUT_TOPIC) {
+private class MotionSensorLiveData(mqtt: BaseMqtt, private val deviceName: String) : BaseMqttLiveData<NetworkResource<MotionSensorInfo>>(mqtt, OUT_TOPIC) {
 
     override fun onNewMessage(message: JSONObject) {
         Log.i(TAG, "$OUT_TOPIC: $message")

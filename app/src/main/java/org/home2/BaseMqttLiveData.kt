@@ -7,16 +7,17 @@ import org.json.JSONObject
 abstract class BaseMqttLiveData<T>(private val mqtt: BaseMqtt, private val topic: String) : MutableLiveData<T>() {
 
     abstract fun onNewMessage(message: JSONObject)
+    private val listener: (String) -> Unit = { message ->
+        val parsed = parse(message)
+        parsed?.let { onNewMessage(it) }
+    }
 
     override fun onActive() {
-        mqtt.subscribe(topic) { message ->
-            val parsed = parse(message)
-            parsed?.let { onNewMessage(it) }
-        }
+        mqtt.subscribe(topic, listener)
     }
 
     override fun onInactive() {
-        mqtt.unsubscribe(topic)
+        mqtt.unsubscribe(topic, listener)
     }
 
     private fun parse(message: String): JSONObject? {
