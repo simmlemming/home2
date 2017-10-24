@@ -1,3 +1,6 @@
 <resources>
     <string name="app_name">Home 2</string>
+    <string name="on">on</string>
+    <string name="off">Off</string>
+    <string name="reset">Reset</string>
 </resources>

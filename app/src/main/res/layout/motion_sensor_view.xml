@@ -21,8 +21,8 @@
         android:layout_height="16dp"
         android:layout_marginLeft="8dp"
         android:layout_marginTop="8dp"
-        android:visibility="gone"
-        android:layout_toRightOf="@id/name" />
+        android:layout_toRightOf="@id/name"
+        android:visibility="gone" />
 
     <LinearLayout
         android:layout_width="wrap_content"
@@ -33,21 +33,17 @@
         android:orientation="horizontal">
 
         <Button
-            android:id="@+id/on"
+            android:id="@+id/on_off"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="On" />
-
-        <Button
-            android:id="@+id/off"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Off" />
+            android:backgroundTint="@color/white"
+            android:text="@string/on" />
 
         <Button
             android:id="@+id/reset"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Reset" />
+            android:backgroundTint="@color/white"
+            android:text="@string/reset" />
     </LinearLayout>
 </RelativeLayout>

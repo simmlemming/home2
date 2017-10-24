@@ -41,7 +41,7 @@ class HomeService : Service() {
     }
 }
 
-abstract class DeviceFilter {
+abstract class DeviceFilter private constructor() {
     companion object {
         fun withName(name: String) = object : DeviceFilter() {
             override fun addFilers(command: JSONObject) {

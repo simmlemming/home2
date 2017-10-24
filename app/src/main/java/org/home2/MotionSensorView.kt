@@ -14,23 +14,24 @@ import kotlin.properties.Delegates
  */
 class MotionSensorView : FrameLayout {
     interface Listener {
-        fun switchOn(name : String)
-        fun switchOff(name : String)
-        fun reset(name : String)
+        fun switchOn(name: String)
+        fun switchOff(name: String)
+        fun reset(name: String)
     }
 
     private lateinit var rootLayout: View
     private lateinit var nameView: TextView
-    private lateinit var onView : Button
-    private lateinit var offView : Button
-    private lateinit var resetView : Button
+    private lateinit var onOffView: Button
+    private lateinit var resetView: Button
     private lateinit var waitingView: View
 
-    var listener : Listener? = null
-    var name : String by Delegates.observable("unknown") {_, _, newValue ->
+    private val switchOnListener = SwitchOnOnClickListener()
+    private val switchOffListener = SwitchOffOnClickListener()
+
+    var listener: Listener? = null
+    var name: String by Delegates.observable("unknown") { _, _, newValue ->
         nameView.text = newValue
     }
-
 
     @JvmOverloads
     constructor(context: Context, attributeSet: AttributeSet? = null, defStyleAttrs: Int = 0, styleRes: Int = 0) : super(context, attributeSet, defStyleAttrs, styleRes)
@@ -41,17 +42,12 @@ class MotionSensorView : FrameLayout {
 
         rootLayout = findViewById(R.id.root)
         nameView = findViewById(R.id.name)
-        onView = findViewById(R.id.on)
-        offView = findViewById(R.id.off)
+        onOffView = findViewById(R.id.on_off)
         resetView = findViewById(R.id.reset)
         waitingView = findViewById(R.id.waiting)
 
-        onView.setOnClickListener { _ ->
+        onOffView.setOnClickListener { _ ->
             listener?.switchOn(name)
-        }
-
-        offView.setOnClickListener { _ ->
-            listener?.switchOff(name)
         }
 
         resetView.setOnClickListener { _ ->
@@ -62,6 +58,25 @@ class MotionSensorView : FrameLayout {
     fun setInfo(info: NetworkResource<MotionSensorInfo>) {
         backgroundTintList = ColorStateList.valueOf(info.data.bgColor(context))
         waitingView.visibility = if (info.state == NetworkResource.State.LOADING) View.VISIBLE else View.GONE
+        if (info.data?.state == 0) {
+            onOffView.text = context.getString(R.string.on)
+            onOffView.setOnClickListener(switchOffListener)
+        } else {
+            onOffView.text = context.getString(R.string.off)
+            onOffView.setOnClickListener(switchOnListener)
+        }
+    }
+
+    private inner class SwitchOnOnClickListener : OnClickListener {
+        override fun onClick(v: View?) {
+            listener?.switchOff(name)
+        }
+    }
+
+    private inner class SwitchOffOnClickListener : OnClickListener {
+        override fun onClick(v: View?) {
+            listener?.switchOff(name)
+        }
     }
 }
 
@@ -78,3 +93,4 @@ private fun MotionSensorInfo?.bgColor(context: Context): Int {
 
     return context.resources.getColor(resId, context.theme)
 }
+
