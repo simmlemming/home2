@@ -10,6 +10,9 @@ import android.os.Bundle
 import android.os.IBinder
 import android.support.v4.app.FragmentActivity
 import android.widget.TextView
+import org.home2.service.HomeService
+
+private const val SENSOR_NAME = "living_motion_01"
 
 class MainActivity : FragmentActivity() {
     private lateinit var room1MeterView: RoomMeterView
@@ -25,11 +28,9 @@ class MainActivity : FragmentActivity() {
 
         override fun onServiceConnected(name: ComponentName?, binder: IBinder?) {
             service = (binder as HomeService.HomeBinder).service
-            service!!.motionSensorInfo.observe(this@MainActivity, Observer<NetworkResource<MotionSensorInfo>> {
+            service!!.observe(SENSOR_NAME, this@MainActivity, Observer<NetworkResource<DeviceInfo>> {
                 it?.let {
-                    if (motionSensorView.name == it.data?.name) {
-                        motionSensorView.setInfo(it)
-                    }
+                    motionSensorView.setInfo(it)
                 }
             })
         }
@@ -50,19 +51,19 @@ class MainActivity : FragmentActivity() {
 
         motionSensorView.listener = object : MotionSensorView.Listener {
             override fun switchOn(name: String) {
-                service?.devices(DeviceFilter.withName(name))?.on()
+                service?.device(name)?.on()
             }
 
             override fun switchOff(name: String) {
-                service?.devices(DeviceFilter.withName(name))?.off()
+                service?.device(name)?.off()
             }
 
             override fun reset(name: String) {
-                service?.devices(DeviceFilter.withName(name))?.reset()
+                service?.device(name)?.reset()
             }
         }
 
-        motionSensorView.name = "living_motion_01"
+        motionSensorView.name = SENSOR_NAME
 
         viewModel.room1Info.observe(this, Observer<RoomInfo> { updateUi(it) })
         viewModel.getConnectionStatus().observe(this, Observer<ConnectionState> {

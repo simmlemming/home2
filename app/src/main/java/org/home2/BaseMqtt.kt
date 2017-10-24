@@ -2,6 +2,7 @@ package org.home2
 
 import android.arch.lifecycle.MutableLiveData
 import org.eclipse.paho.client.mqttv3.IMqttMessageListener
+import org.eclipse.paho.client.mqttv3.MqttMessage
 
 /**
  * Created by mtkachenko on 29/05/17.
@@ -18,9 +19,7 @@ abstract class BaseMqtt {
     abstract fun publish(topic: String, message: String)
 
     protected val subscribeListener = IMqttMessageListener { topic, message ->
-        listeners[topic]?.forEach { listener ->
-            listener.invoke(message.toString())
-        }
+        onNewMessage(topic, message)
     }
 
     fun subscribe(topic: String, listener: (String) -> Unit) {
@@ -44,6 +43,12 @@ abstract class BaseMqtt {
 
         if (listeners[topic]!!.isEmpty()) {
             unsubscribeInner(topic)
+        }
+    }
+
+    private fun onNewMessage(topic: String, message: MqttMessage) {
+        listeners[topic]?.forEach { listener ->
+            listener.invoke(message.toString())
         }
     }
 }

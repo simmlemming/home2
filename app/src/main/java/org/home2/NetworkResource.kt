@@ -3,7 +3,7 @@ package org.home2
 /**
  * Created by mtkachenko on 23/10/17.
  */
-class NetworkResource<out T> private constructor(val state: NetworkResource.State, val data: T?, val exception: Throwable?) {
+data class NetworkResource<out T> constructor(val state: NetworkResource.State, val data: T?, val exception: Throwable?) {
     enum class State {
         SUCCESS,
         ERROR,

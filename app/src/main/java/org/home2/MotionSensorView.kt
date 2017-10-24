@@ -55,21 +55,21 @@ class MotionSensorView : FrameLayout {
         }
     }
 
-    fun setInfo(info: NetworkResource<MotionSensorInfo>) {
+    fun setInfo(info: NetworkResource<DeviceInfo>) {
         backgroundTintList = ColorStateList.valueOf(info.data.bgColor(context))
         waitingView.visibility = if (info.state == NetworkResource.State.LOADING) View.VISIBLE else View.GONE
-        if (info.data?.state == 0) {
+        if (info.data?.state == DeviceInfo.STATE_OFF) {
             onOffView.text = context.getString(R.string.on)
-            onOffView.setOnClickListener(switchOffListener)
+            onOffView.setOnClickListener(switchOnListener)
         } else {
             onOffView.text = context.getString(R.string.off)
-            onOffView.setOnClickListener(switchOnListener)
+            onOffView.setOnClickListener(switchOffListener)
         }
     }
 
     private inner class SwitchOnOnClickListener : OnClickListener {
         override fun onClick(v: View?) {
-            listener?.switchOff(name)
+            listener?.switchOn(name)
         }
     }
 
@@ -80,7 +80,7 @@ class MotionSensorView : FrameLayout {
     }
 }
 
-private fun MotionSensorInfo?.bgColor(context: Context): Int {
+private fun DeviceInfo?.bgColor(context: Context): Int {
     val resId = when {
         this == null -> R.color.sensor_unknown
         state == 0 -> R.color.sensor_off
