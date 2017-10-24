@@ -108,5 +108,10 @@ public class BaseMqttTest {
         public void disconnect() {
 
         }
+
+        @Override
+        public void publish(@NotNull String topic, @NotNull String message) {
+
+        }
     }
 }
