@@ -6,7 +6,6 @@ import android.util.Log
 import org.eclipse.paho.android.service.MqttAndroidClient
 import org.eclipse.paho.client.mqttv3.*
 import org.home2.BaseMqtt
-import org.home2.ConnectionState
 import org.home2.TAG
 
 
@@ -19,8 +18,8 @@ private const val MQTT_QOS = 1
 
 class Mqtt(context: Context) : BaseMqtt() {
     private val mqttClient = MqttAndroidClient(context, MQTT_SERVER_URL, MQTT_CLIENT_ID)
-
     private val handler = Handler()
+
     init {
         mqttClient.setCallback(HomeMqttCallback())
     }
@@ -42,31 +41,28 @@ class Mqtt(context: Context) : BaseMqtt() {
         }
     }
 
-    override fun connect() {
-        connectionStatus.value = ConnectionState.CONNECTING
-        mqttClient.connect(HomeConnectOptions(), null, ConnectCallback())
+    override fun connect(listener: IMqttActionListener) {
+        connectivityListener?.onConnecting()
+        mqttClient.connect(HomeConnectOptions(), null, listener)
     }
 
     override fun disconnect() {
-        if (isConnected()) {
-            connectionStatus.value = ConnectionState.DISCONNECTED
+        if (mqttClient.isConnected) {
             mqttClient.disconnect()
         }
     }
 
     private fun whenConnected(f: () -> Unit) {
-        if (isConnected()) {
+        if (mqttClient.isConnected) {
             f.invoke()
         } else {
             handler.postDelayed({ whenConnected(f) }, 200)
         }
     }
 
-    private fun isConnected() = connectionStatus.value == ConnectionState.CONNECTED
-
     private inner class HomeMqttCallback : MqttCallbackExtended {
         override fun connectComplete(reconnect: Boolean, serverURI: String?) {
-            connectionStatus.postValue(ConnectionState.CONNECTED)
+            connectivityListener?.onConnected()
         }
 
         override fun messageArrived(topic: String?, message: MqttMessage?) {
@@ -76,23 +72,11 @@ class Mqtt(context: Context) : BaseMqtt() {
 
         override fun connectionLost(cause: Throwable?) {
             Log.e(TAG, "${javaClass.simpleName}.connectionLost", cause)
-            connectionStatus.postValue(ConnectionState.DISCONNECTED)
+            connectivityListener?.onDisconnected()
         }
 
         override fun deliveryComplete(token: IMqttDeliveryToken?) {
 
-        }
-    }
-
-    private inner class ConnectCallback : IMqttActionListener {
-        override fun onSuccess(asyncActionToken: IMqttToken?) {
-            Log.i(TAG, "${javaClass.simpleName}.onSuccess()")
-            connectionStatus.postValue(ConnectionState.CONNECTED)
-        }
-
-        override fun onFailure(asyncActionToken: IMqttToken?, exception: Throwable?) {
-            Log.e(TAG, "${javaClass.simpleName}.onFailure()", exception)
-            connectionStatus.postValue(ConnectionState.DISCONNECTED)
         }
     }
 }

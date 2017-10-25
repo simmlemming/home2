@@ -2,10 +2,10 @@ package org.home2.mqtt
 
 import android.content.Context
 import android.util.Log
+import org.eclipse.paho.client.mqttv3.IMqttActionListener
 import org.eclipse.paho.client.mqttv3.IMqttMessageListener
 import org.eclipse.paho.client.mqttv3.MqttMessage
 import org.home2.BaseMqtt
-import org.home2.ConnectionState
 import org.home2.DeviceInfo
 import org.home2.TAG
 import org.home2.service.IN_TOPIC
@@ -40,15 +40,14 @@ class Mqtt(context: Context) : BaseMqtt() {
         }
     }
 
-    override fun connect() {
+    override fun connect(listener: IMqttActionListener) {
+        listener.onSuccess(null)
         timer = Timer()
-        connectionStatus.value = ConnectionState.CONNECTED
         timer!!.scheduleAtFixedRate(TempSensorUpdates(), rand.nextInt(1000).toLong(), 1000L)
 //        timer!!.scheduleAtFixedRate(MotionSensorUpdates("living_motion_01"), 0, 2000L)
     }
 
     override fun disconnect() {
-        connectionStatus.value = ConnectionState.DISCONNECTED
         timer?.cancel()
         timer = null
     }

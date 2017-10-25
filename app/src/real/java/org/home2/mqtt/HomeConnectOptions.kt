@@ -6,5 +6,6 @@ class HomeConnectOptions : MqttConnectOptions() {
     init {
         isAutomaticReconnect = true
         isCleanSession = false
+        connectionTimeout = 5;
     }
 }

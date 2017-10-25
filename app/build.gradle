@@ -50,10 +50,10 @@ dependencies {
     compile 'org.eclipse.paho:org.eclipse.paho.android.service:1.1.1'
     compile 'org.eclipse.paho:org.eclipse.paho.client.mqttv3:1.1.1'
 
-//    androidTestCompile 'org.mockito:mockito-android:2.11.0'
     androidTestCompile 'com.linkedin.dexmaker:dexmaker-mockito:2.2.0'
 
     testCompile 'junit:junit:4.12'
+    testCompile 'org.mockito:mockito-android:2.11.0'
 
     androidTestCompile('com.android.support.test.espresso:espresso-core:2.2.2', {
         exclude group: 'com.android.support', module: 'support-annotations'

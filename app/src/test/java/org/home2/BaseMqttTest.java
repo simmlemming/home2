@@ -1,13 +1,10 @@
 package org.home2;
 
-import android.support.test.runner.AndroidJUnit4;
-
+import org.eclipse.paho.client.mqttv3.IMqttActionListener;
 import org.eclipse.paho.client.mqttv3.IMqttMessageListener;
 import org.jetbrains.annotations.NotNull;
 import org.junit.Before;
 import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.mockito.Mockito;
 
 import kotlin.Unit;
 import kotlin.jvm.functions.Function1;
@@ -16,6 +13,7 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
@@ -23,14 +21,13 @@ import static org.mockito.Mockito.verify;
  * Created by mtkachenko on 23/10/17.
  */
 
-@RunWith(AndroidJUnit4.class)
 public class BaseMqttTest {
     private BaseMqtt mqtt;
     private Function1<String, Unit> listener1, listener2, listener3;
 
     @Before
     public void setUp() {
-        mqtt = Mockito.spy(new MqttUnderTest());
+        mqtt = spy(new MqttUnderTest());
         listener1 = newListener();
         listener2 = newListener();
         listener3 = newListener();
@@ -100,7 +97,7 @@ public class BaseMqttTest {
         }
 
         @Override
-        public void connect() {
+        public void connect(@NotNull IMqttActionListener listener) {
 
         }
 

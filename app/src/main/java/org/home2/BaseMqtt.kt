@@ -1,6 +1,6 @@
 package org.home2
 
-import android.arch.lifecycle.MutableLiveData
+import org.eclipse.paho.client.mqttv3.IMqttActionListener
 import org.eclipse.paho.client.mqttv3.IMqttMessageListener
 import org.eclipse.paho.client.mqttv3.MqttMessage
 
@@ -8,13 +8,18 @@ import org.eclipse.paho.client.mqttv3.MqttMessage
  * Created by mtkachenko on 29/05/17.
  */
 abstract class BaseMqtt {
-    val connectionStatus = MutableLiveData<ConnectionState>()
+    interface ConnectivityChangedListener {
+        fun onConnecting()
+        fun onConnected()
+        fun onDisconnected()
+    }
 
-    private val listeners = mutableMapOf<String, MutableList<(String) -> Unit>>()
+    var connectivityListener: ConnectivityChangedListener? = null
+    private val subscribeListeners = mutableMapOf<String, MutableList<(String) -> Unit>>()
 
     protected abstract fun subscribeInner(topic: String, listener: IMqttMessageListener)
     protected abstract fun unsubscribeInner(topic: String)
-    abstract fun connect()
+    abstract fun connect(listener: IMqttActionListener)
     abstract fun disconnect()
     abstract fun publish(topic: String, message: String)
 
@@ -23,31 +28,31 @@ abstract class BaseMqtt {
     }
 
     fun subscribe(topic: String, listener: (String) -> Unit) {
-        if (listeners.containsKey(topic)) {
-            listeners[topic]!!.add(listener)
+        if (subscribeListeners.containsKey(topic)) {
+            subscribeListeners[topic]!!.add(listener)
         } else {
-            listeners[topic] = mutableListOf(listener)
+            subscribeListeners[topic] = mutableListOf(listener)
         }
 
-        if (listeners[topic]!!.size == 1) {
+        if (subscribeListeners[topic]!!.size == 1) {
             subscribeInner(topic, subscribeListener)
         }
     }
 
     fun unsubscribe(topic: String, listener: (String) -> Unit) {
-        if (!listeners.containsKey(topic)) {
+        if (!subscribeListeners.containsKey(topic)) {
             return
         }
 
-        listeners[topic]!!.remove(listener)
+        subscribeListeners[topic]!!.remove(listener)
 
-        if (listeners[topic]!!.isEmpty()) {
+        if (subscribeListeners[topic]!!.isEmpty()) {
             unsubscribeInner(topic)
         }
     }
 
     private fun onNewMessage(topic: String, message: MqttMessage) {
-        listeners[topic]?.forEach { listener ->
+        subscribeListeners[topic]?.forEach { listener ->
             listener.invoke(message.toString())
         }
     }

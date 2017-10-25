@@ -2,12 +2,16 @@ package org.home2.service
 
 import android.app.Service
 import android.arch.lifecycle.LifecycleOwner
+import android.arch.lifecycle.LiveData
+import android.arch.lifecycle.MutableLiveData
 import android.arch.lifecycle.Observer
 import android.content.Intent
 import android.os.Binder
 import android.os.IBinder
 import android.util.Log
 import org.home2.*
+import org.home2.mqtt.ConnectCallback
+import org.home2.mqtt.HomeConnectivityChangedListener
 import org.json.JSONException
 import org.json.JSONObject
 
@@ -21,9 +25,13 @@ class HomeService : Service() {
     private lateinit var mqtt: BaseMqtt
     private val liveData: MutableMap<String, DeviceLiveData> = mutableMapOf()
 
+    val connectionState: LiveData<ConnectionState> = MutableLiveData<ConnectionState>()
+
     override fun onCreate() {
         super.onCreate()
         mqtt = (applicationContext as HomeApplication).mqtt
+        mqtt.connectivityListener = HomeConnectivityChangedListener(connectionState as MutableLiveData<ConnectionState>)
+        mqtt.connect(ConnectCallback(connectionState))
     }
 
     override fun onBind(intent: Intent?): IBinder {
@@ -42,6 +50,11 @@ class HomeService : Service() {
         }
 
         liveData[deviceName]!!.observe(owner, observer)
+    }
+
+    override fun onDestroy() {
+        mqtt.disconnect()
+        super.onDestroy()
     }
 }
 

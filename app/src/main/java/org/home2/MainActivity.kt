@@ -1,7 +1,6 @@
 package org.home2
 
 import android.arch.lifecycle.Observer
-import android.arch.lifecycle.ViewModelProviders
 import android.content.ComponentName
 import android.content.Context
 import android.content.Intent
@@ -28,6 +27,10 @@ class MainActivity : FragmentActivity() {
 
         override fun onServiceConnected(name: ComponentName?, binder: IBinder?) {
             service = (binder as HomeService.HomeBinder).service
+            service!!.connectionState.observe(this@MainActivity, Observer<ConnectionState> {
+                connectionStatusView.text = it.toString()
+            })
+
             service!!.observe(SENSOR_NAME, this@MainActivity, Observer<NetworkResource<DeviceInfo>> {
                 it?.let {
                     motionSensorView.setInfo(it)
@@ -44,11 +47,6 @@ class MainActivity : FragmentActivity() {
         motionSensorView = findViewById(R.id.motion_sensor)
         connectionStatusView = findViewById(R.id.connection_status)
 
-        val viewModel = ViewModelProviders
-                .of(this)
-                .get(MainActivityViewModel::class.java)
-
-
         motionSensorView.listener = object : MotionSensorView.Listener {
             override fun switchOn(name: String) {
                 service?.device(name)?.on()
@@ -64,11 +62,6 @@ class MainActivity : FragmentActivity() {
         }
 
         motionSensorView.name = SENSOR_NAME
-
-        viewModel.room1Info.observe(this, Observer<RoomInfo> { updateUi(it) })
-        viewModel.getConnectionStatus().observe(this, Observer<ConnectionState> {
-            connectionStatusView.text = it.toString()
-        })
 
         val homeService = Intent(this, HomeService::class.java)
         bindService(homeService, serviceConnection, Context.BIND_AUTO_CREATE)

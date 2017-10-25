@@ -10,5 +10,4 @@ import org.home2.mqtt.Mqtt
 const val TAG = "Home"
 class HomeApplication : Application() {
     internal val mqtt = Mqtt(this)
-    internal val mqttRoomInfoRepository = RoomInfoRepository(mqtt)
 }
