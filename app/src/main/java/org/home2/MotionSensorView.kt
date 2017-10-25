@@ -17,12 +17,14 @@ class MotionSensorView : FrameLayout {
         fun switchOn(name: String)
         fun switchOff(name: String)
         fun reset(name: String)
+        fun update(name: String)
     }
 
     private lateinit var rootLayout: View
     private lateinit var nameView: TextView
     private lateinit var onOffView: Button
     private lateinit var resetView: Button
+    private lateinit var updateView: Button
     private lateinit var waitingView: View
 
     private val switchOnListener = SwitchOnOnClickListener()
@@ -44,6 +46,7 @@ class MotionSensorView : FrameLayout {
         nameView = findViewById(R.id.name)
         onOffView = findViewById(R.id.on_off)
         resetView = findViewById(R.id.reset)
+        updateView = findViewById(R.id.update)
         waitingView = findViewById(R.id.waiting)
 
         onOffView.setOnClickListener { _ ->
@@ -53,11 +56,16 @@ class MotionSensorView : FrameLayout {
         resetView.setOnClickListener { _ ->
             listener?.reset(name)
         }
+
+        updateView.setOnClickListener { _ ->
+            listener?.update(name)
+        }
     }
 
     fun setInfo(info: NetworkResource<DeviceInfo>) {
         backgroundTintList = ColorStateList.valueOf(info.data.bgColor(context))
         waitingView.visibility = if (info.state == NetworkResource.State.LOADING) View.VISIBLE else View.GONE
+
         if (info.data?.state == DeviceInfo.STATE_OFF) {
             onOffView.text = context.getString(R.string.on)
             onOffView.setOnClickListener(switchOnListener)

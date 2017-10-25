@@ -12,16 +12,21 @@ import android.util.Log
 import org.home2.*
 import org.home2.mqtt.ConnectCallback
 import org.home2.mqtt.HomeConnectivityChangedListener
+import org.home2.service.HomeService.Companion.OUT_TOPIC
 import org.json.JSONException
 import org.json.JSONObject
 
 /**
  * Created by mtkachenko on 21/10/17.
  */
-const val OUT_TOPIC = "home/out"
-const val IN_TOPIC = "home/in"
 
 class HomeService : Service() {
+    companion object {
+        const val OUT_TOPIC = "home/out"
+        const val IN_TOPIC = "home/in"
+        const val DEVICE_NAME_ALL = "all"
+    }
+
     private lateinit var mqtt: BaseMqtt
     private val liveData: MutableMap<String, DeviceLiveData> = mutableMapOf()
 
@@ -42,7 +47,7 @@ class HomeService : Service() {
         val service = this@HomeService
     }
 
-    fun device(deviceName: String) = DeviceInteraction(deviceName, mqtt, liveData[deviceName])
+    fun device(deviceName: String) = DeviceInteraction(deviceName, mqtt, liveData)
 
     fun observe(deviceName: String, owner: LifecycleOwner, observer: Observer<NetworkResource<DeviceInfo>>) {
         if (liveData[deviceName] == null) {
@@ -63,7 +68,8 @@ class DeviceLiveData(mqtt: BaseMqtt, private val deviceName: String) : BaseMqttL
     override fun onNewMessage(message: JSONObject) {
         Log.i(TAG, "${OUT_TOPIC}: $message")
 
-        if (message.optString("name") != deviceName) {
+        val name = message.optString("name")
+        if (name != deviceName && name != HomeService.DEVICE_NAME_ALL) {
             return
         }
 

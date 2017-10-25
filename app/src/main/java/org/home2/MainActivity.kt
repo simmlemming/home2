@@ -36,6 +36,8 @@ class MainActivity : FragmentActivity() {
                     motionSensorView.setInfo(it)
                 }
             })
+
+            service!!.device(HomeService.DEVICE_NAME_ALL).status()
         }
     }
 
@@ -48,6 +50,10 @@ class MainActivity : FragmentActivity() {
         connectionStatusView = findViewById(R.id.connection_status)
 
         motionSensorView.listener = object : MotionSensorView.Listener {
+            override fun update(name: String) {
+                service?.device(name)?.status()
+            }
+
             override fun switchOn(name: String) {
                 service?.device(name)?.on()
             }

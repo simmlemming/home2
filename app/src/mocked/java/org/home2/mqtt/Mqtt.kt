@@ -8,9 +8,7 @@ import org.eclipse.paho.client.mqttv3.MqttMessage
 import org.home2.BaseMqtt
 import org.home2.DeviceInfo
 import org.home2.TAG
-import org.home2.service.IN_TOPIC
-import org.home2.service.OUT_TOPIC
-import org.json.JSONException
+import org.home2.service.HomeService
 import org.json.JSONObject
 import java.util.*
 import java.util.concurrent.ScheduledThreadPoolExecutor
@@ -24,6 +22,7 @@ class Mqtt(context: Context) : BaseMqtt() {
     private val rand = Random()
     private var timer: Timer? = null
     private val executor = ScheduledThreadPoolExecutor(1)
+    private val knownDeviceNames = listOf<String>("living_motion_01", "living_motion_02")
 
     override fun subscribeInner(topic: String, listener: IMqttMessageListener) {
 
@@ -43,7 +42,7 @@ class Mqtt(context: Context) : BaseMqtt() {
     override fun connect(listener: IMqttActionListener) {
         listener.onSuccess(null)
         timer = Timer()
-        timer!!.scheduleAtFixedRate(TempSensorUpdates(), rand.nextInt(1000).toLong(), 1000L)
+//        timer!!.scheduleAtFixedRate(TempSensorUpdates(), rand.nextInt(1000).toLong(), 1000L)
 //        timer!!.scheduleAtFixedRate(MotionSensorUpdates("living_motion_01"), 0, 2000L)
     }
 
@@ -55,29 +54,28 @@ class Mqtt(context: Context) : BaseMqtt() {
     override fun publish(topic: String, message: String) {
         Log.i(TAG, "$topic <-- $message")
 
-        if (topic != IN_TOPIC) {
+        if (topic != HomeService.IN_TOPIC) {
             return
         }
 
-        var response: JSONObject? = null
+        val messageObject = JSONObject(message)
+        val cmd = messageObject.optString("cmd")
+        val name = messageObject.optString("name")
 
-        try {
-            val messageObject = JSONObject(message)
-            val cmd = messageObject.getString("cmd")
-            val name = messageObject.getString("name")
+        val namesToRespondTo = if (name == HomeService.DEVICE_NAME_ALL) knownDeviceNames else listOf(name)
 
-            response = when (cmd) {
-                "on" -> newResponse(name, DeviceInfo.STATE_OK)
-                "off" -> newResponse(name, DeviceInfo.STATE_OFF)
-                "reset" -> newResponse(name, DeviceInfo.STATE_OK)
+        namesToRespondTo.forEach { nameToRespondTo ->
+            val response: JSONObject? = when (cmd) {
+                "on" -> newResponse(nameToRespondTo, DeviceInfo.STATE_OK)
+                "off" -> newResponse(nameToRespondTo, DeviceInfo.STATE_OFF)
+                "reset" -> newResponse(nameToRespondTo, DeviceInfo.STATE_OK)
+                "status" -> newResponse(nameToRespondTo, DeviceInfo.STATE_OK)
                 else -> null
             }
-        } catch (e: JSONException) {
 
-        }
-
-        response?.let {
-            executor.schedule({ subscribeListener.messageArrived(OUT_TOPIC, MqttMessage(it.toString().toByteArray())) }, 500L, TimeUnit.MILLISECONDS)
+            response?.let {
+                executor.schedule({ subscribeListener.messageArrived(HomeService.OUT_TOPIC, MqttMessage(it.toString().toByteArray())) }, 500L, TimeUnit.MILLISECONDS)
+            }
         }
     }
 
