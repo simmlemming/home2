@@ -53,13 +53,12 @@ class HomeService : Service() {
     override fun onCreate() {
         super.onCreate()
 
+        notificationController = (applicationContext as HomeApplication).notificationController
         startForeground(NotificationController.NOTIFICATION_ID, notificationController.newDisconnectedNotification())
 
         connectionState.observeForever(notificationUpdater)
 
         mqtt = (applicationContext as HomeApplication).mqtt
-        notificationController = (applicationContext as HomeApplication).notificationController
-
         mqtt.connectivityListener = HomeConnectivityChangedListener(connectionState as MutableLiveData<ConnectionState>)
         mqtt.connect(ConnectCallback(connectionState))
     }
