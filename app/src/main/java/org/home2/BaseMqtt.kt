@@ -51,7 +51,7 @@ abstract class BaseMqtt {
         }
     }
 
-    private fun onNewMessage(topic: String, message: MqttMessage) {
+    protected open fun onNewMessage(topic: String, message: MqttMessage) {
         subscribeListeners[topic]?.forEach { listener ->
             listener.invoke(message.toString())
         }

@@ -26,6 +26,7 @@ class Mqtt(context: Context) : BaseMqtt() {
 
     override fun publish(topic: String, message: String) {
         whenConnected {
+            Log.i(TAG, "$topic <-- $message")
             mqttClient.publish(topic, MqttMessage(message.toByteArray()))
         }
     }
@@ -60,6 +61,11 @@ class Mqtt(context: Context) : BaseMqtt() {
         } else {
             handler.postDelayed({ whenConnected(f) }, 200)
         }
+    }
+
+    override fun onNewMessage(topic: String, message: MqttMessage) {
+        Log.i(TAG, "$topic --> $message")
+        super.onNewMessage(topic, message)
     }
 
     private inner class HomeMqttCallback : MqttCallbackExtended {

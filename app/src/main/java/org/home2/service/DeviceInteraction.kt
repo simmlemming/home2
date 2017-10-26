@@ -11,7 +11,7 @@ class DeviceInteraction(private val deviceName: String, private val mqtt: BaseMq
 
     fun reset() = execute(DeviceCommand.reset(deviceName, liveData))
 
-    fun status() = execute(DeviceCommand.status(deviceName, liveData))
+    fun state() = execute(DeviceCommand.state(deviceName, liveData))
 
     private fun execute(command: DeviceCommand) {
         mqtt.publish(HomeService.IN_TOPIC, command.mqttMessage().toString())

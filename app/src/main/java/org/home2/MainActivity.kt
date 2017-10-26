@@ -45,7 +45,7 @@ class MainActivity : FragmentActivity() {
                 }
             })
 
-            service!!.device(HomeService.DEVICE_NAME_ALL).status()
+            service!!.device(HomeService.DEVICE_NAME_ALL).state()
         }
     }
 
@@ -59,7 +59,7 @@ class MainActivity : FragmentActivity() {
 
         motionSensorView.listener = object : MotionSensorView.Listener {
             override fun update(name: String) {
-                service?.device(name)?.status()
+                service?.device(name)?.state()
             }
 
             override fun switchOn(name: String) {

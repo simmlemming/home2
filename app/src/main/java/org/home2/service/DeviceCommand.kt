@@ -20,8 +20,8 @@ abstract class DeviceCommand(private val deviceName: String, private val liveDat
             override fun expectedDeviceInfo(deviceInfo: DeviceInfo) = deviceInfo.copy(state = DeviceInfo.STATE_OK)
         }
 
-        fun status(deviceName: String, liveData: Map<String, DeviceLiveData>): DeviceCommand = object : DeviceCommand(deviceName, liveData) {
-            override fun mqttMessage() = mqttMessage(deviceName, "status")
+        fun state(deviceName: String, liveData: Map<String, DeviceLiveData>): DeviceCommand = object : DeviceCommand(deviceName, liveData) {
+            override fun mqttMessage() = mqttMessage(deviceName, "state")
             override fun expectedDeviceInfo(deviceInfo: DeviceInfo) = deviceInfo
         }
     }
