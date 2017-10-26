@@ -1,5 +1,6 @@
 package org.home2
 
+import android.app.PendingIntent
 import android.arch.lifecycle.Observer
 import android.content.ComponentName
 import android.content.Context
@@ -14,6 +15,13 @@ import org.home2.service.HomeService
 private const val SENSOR_NAME = "living_motion_01"
 
 class MainActivity : FragmentActivity() {
+    companion object {
+        fun intentToOpen(context: Context): PendingIntent {
+            val activity = Intent(context, MainActivity::class.java)
+            return PendingIntent.getActivity(context, 0, activity, PendingIntent.FLAG_UPDATE_CURRENT)
+        }
+    }
+
     private lateinit var room1MeterView: RoomMeterView
     private lateinit var motionSensorView: MotionSensorView
     private lateinit var connectionStatusView: TextView
@@ -70,16 +78,13 @@ class MainActivity : FragmentActivity() {
         motionSensorView.name = SENSOR_NAME
 
         val homeService = Intent(this, HomeService::class.java)
+        startService(homeService)
         bindService(homeService, serviceConnection, Context.BIND_AUTO_CREATE)
     }
 
     override fun onDestroy() {
         unbindService(serviceConnection)
         super.onDestroy()
-    }
-
-    private fun updateUi(roomInfo: RoomInfo?) {
-        room1MeterView.setRoomInfo(roomInfo ?: RoomInfo("?", 0, 0))
     }
 
     override fun getApplicationContext(): HomeApplication {

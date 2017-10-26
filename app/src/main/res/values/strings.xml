@@ -1,7 +1,10 @@
 <resources>
-    <string name="app_name">Home 2</string>
+    <string name="app_name">Home</string>
     <string name="on">on</string>
     <string name="off">Off</string>
     <string name="reset">Reset</string>
     <string name="update">Update</string>
+    <string name="stop">Stop</string>
+
+    <string name="notification_text_connected">Home connected</string>
 </resources>

@@ -10,4 +10,9 @@ import org.home2.mqtt.Mqtt
 const val TAG = "Home"
 class HomeApplication : Application() {
     internal val mqtt = Mqtt(this)
+
+    override fun onCreate() {
+        super.onCreate()
+        notificationController.createNotificationChannel(this)
+    }
 }

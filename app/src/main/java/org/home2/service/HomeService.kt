@@ -1,10 +1,12 @@
 package org.home2.service
 
+import android.app.PendingIntent
 import android.app.Service
 import android.arch.lifecycle.LifecycleOwner
 import android.arch.lifecycle.LiveData
 import android.arch.lifecycle.MutableLiveData
 import android.arch.lifecycle.Observer
+import android.content.Context
 import android.content.Intent
 import android.os.Binder
 import android.os.IBinder
@@ -25,10 +27,19 @@ class HomeService : Service() {
         const val OUT_TOPIC = "home/out"
         const val IN_TOPIC = "home/in"
         const val DEVICE_NAME_ALL = "all"
+        private const val ACTION_STOP = "stop"
+
+        fun stopIntent(context: Context): PendingIntent {
+            val intent = Intent(context, HomeService::class.java)
+            intent.action = ACTION_STOP
+
+            return PendingIntent.getService(context, 0, intent, PendingIntent.FLAG_CANCEL_CURRENT)
+        }
     }
 
     private lateinit var mqtt: BaseMqtt
     private val liveData: MutableMap<String, DeviceLiveData> = mutableMapOf()
+    private val notificationController = org.home2.notificationController
 
     val connectionState: LiveData<ConnectionState> = MutableLiveData<ConnectionState>()
 
@@ -37,6 +48,16 @@ class HomeService : Service() {
         mqtt = (applicationContext as HomeApplication).mqtt
         mqtt.connectivityListener = HomeConnectivityChangedListener(connectionState as MutableLiveData<ConnectionState>)
         mqtt.connect(ConnectCallback(connectionState))
+
+        startForeground(notificationController.NOTIFICATION_ID, notificationController.newNotification(this))
+    }
+
+    override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
+        if (ACTION_STOP == intent?.action) {
+            stopSelf()
+        }
+
+        return START_STICKY
     }
 
     override fun onBind(intent: Intent?): IBinder {
