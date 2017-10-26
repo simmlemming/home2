@@ -6,5 +6,6 @@
     <string name="update">Update</string>
     <string name="stop">Stop</string>
 
-    <string name="notification_text_connected">Home connected</string>
+    <string name="notification_text_connected">Connected</string>
+    <string name="notification_text_disconnected">Disconnected</string>
 </resources>

@@ -39,17 +39,29 @@ class HomeService : Service() {
 
     private lateinit var mqtt: BaseMqtt
     private val liveData: MutableMap<String, DeviceLiveData> = mutableMapOf()
-    private val notificationController = org.home2.notificationController
+    private lateinit var notificationController: NotificationController
 
     val connectionState: LiveData<ConnectionState> = MutableLiveData<ConnectionState>()
+    private val notificationUpdater = Observer<ConnectionState> { connectionState ->
+        when (connectionState) {
+            ConnectionState.CONNECTED -> notificationController.notifyConnected()
+            else -> notificationController.notifyDisconnected()
+        }
+    }
+
 
     override fun onCreate() {
         super.onCreate()
+
+        startForeground(NotificationController.NOTIFICATION_ID, notificationController.newDisconnectedNotification())
+
+        connectionState.observeForever(notificationUpdater)
+
         mqtt = (applicationContext as HomeApplication).mqtt
+        notificationController = (applicationContext as HomeApplication).notificationController
+
         mqtt.connectivityListener = HomeConnectivityChangedListener(connectionState as MutableLiveData<ConnectionState>)
         mqtt.connect(ConnectCallback(connectionState))
-
-        startForeground(notificationController.NOTIFICATION_ID, notificationController.newNotification(this))
     }
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
@@ -80,6 +92,7 @@ class HomeService : Service() {
 
     override fun onDestroy() {
         mqtt.disconnect()
+        connectionState.removeObserver(notificationUpdater)
         super.onDestroy()
     }
 }

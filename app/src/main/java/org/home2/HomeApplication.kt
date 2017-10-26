@@ -1,6 +1,7 @@
 package org.home2
 
 import android.app.Application
+import android.util.Log
 import org.home2.mqtt.Mqtt
 
 /**
@@ -8,11 +9,13 @@ import org.home2.mqtt.Mqtt
  */
 
 const val TAG = "Home"
+
 class HomeApplication : Application() {
     internal val mqtt = Mqtt(this)
+    internal val notificationController = NotificationController(this)
 
     override fun onCreate() {
         super.onCreate()
-        notificationController.createNotificationChannel(this)
+        notificationController.createNotificationChannel()
     }
 }
