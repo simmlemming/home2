@@ -13,7 +13,7 @@ import org.home2.service.HomeService
 /**
  * Created by mtkachenko on 26/10/17.
  */
-class NotificationController(private val context: Context) {
+open class NotificationController(private val context: Context) {
     companion object {
         const val NOTIFICATION_ID = 1
     }
@@ -21,7 +21,7 @@ class NotificationController(private val context: Context) {
     private val notificationManager: NotificationManager
         get() = context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
 
-    fun notifyDisconnected() {
+    open fun notifyDisconnected() {
         val notification = with(newNotification(context)) {
             setSmallIcon(R.drawable.ic_notification_small_disconnected)
             setContentText(context.getString(R.string.notification_text_disconnected))
@@ -31,7 +31,7 @@ class NotificationController(private val context: Context) {
         notificationManager.notify(NOTIFICATION_ID, notification)
     }
 
-    fun notifyConnected() {
+    open fun notifyConnected() {
         val notification = with(newNotification(context)) {
             setSmallIcon(R.drawable.ic_notification_small_connected)
             setContentText(context.getString(R.string.notification_text_connected))
@@ -41,11 +41,11 @@ class NotificationController(private val context: Context) {
         notificationManager.notify(NOTIFICATION_ID, notification)
     }
 
-    fun notifyAlarm() {
+    open fun notifyAlarm() {
 
     }
 
-    fun newDisconnectedNotification(): Notification {
+    open fun newDisconnectedNotification(): Notification {
         return with(newNotification(context)) {
             setSmallIcon(R.drawable.ic_notification_small_disconnected)
             setContentText(context.getString(R.string.notification_text_connected))

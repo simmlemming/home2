@@ -1,7 +1,7 @@
 package org.home2
 
 import android.app.Application
-import android.util.Log
+import android.support.annotation.VisibleForTesting
 import org.home2.mqtt.Mqtt
 
 /**
@@ -11,11 +11,31 @@ import org.home2.mqtt.Mqtt
 const val TAG = "Home"
 
 class HomeApplication : Application() {
-    internal val mqtt = Mqtt(this)
-    internal val notificationController = NotificationController(this)
+    var mqtt: BaseMqtt = Mqtt(this)
+        private set
+
+    var notificationController = NotificationController(this)
+        private set
 
     override fun onCreate() {
         super.onCreate()
+
         notificationController.createNotificationChannel()
+    }
+
+    @VisibleForTesting
+    fun setMockedMqtt(mqtt: BaseMqtt) {
+        this.mqtt = mqtt
+    }
+
+    @VisibleForTesting
+    fun setMockedNotificationController(notificationController: NotificationController) {
+        this.notificationController = notificationController
+    }
+
+    @VisibleForTesting
+    fun cleanMockedDependencies() {
+        mqtt = Mqtt(this)
+        notificationController = NotificationController(this)
     }
 }

@@ -38,8 +38,8 @@ class HomeService : Service() {
     }
 
     private lateinit var mqtt: BaseMqtt
-    private val liveData: MutableMap<String, DeviceLiveData> = mutableMapOf()
     private lateinit var notificationController: NotificationController
+    private val liveData: MutableMap<String, DeviceLiveData> = mutableMapOf()
 
     val connectionState: LiveData<ConnectionState> = MutableLiveData<ConnectionState>()
     private val notificationUpdater = Observer<ConnectionState> { connectionState ->
@@ -49,10 +49,8 @@ class HomeService : Service() {
         }
     }
 
-
     override fun onCreate() {
         super.onCreate()
-
         notificationController = (applicationContext as HomeApplication).notificationController
         startForeground(NotificationController.NOTIFICATION_ID, notificationController.newDisconnectedNotification())
 
