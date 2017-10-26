@@ -25,7 +25,9 @@ class Mqtt(context: Context) : BaseMqtt() {
     }
 
     override fun publish(topic: String, message: String) {
-        mqttClient.publish(topic, MqttMessage(message.toByteArray()))
+        whenConnected {
+            mqttClient.publish(topic, MqttMessage(message.toByteArray()))
+        }
     }
 
     override fun subscribeInner(topic: String, listener: IMqttMessageListener) {
