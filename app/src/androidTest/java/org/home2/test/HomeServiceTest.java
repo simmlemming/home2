@@ -7,12 +7,15 @@ import android.support.test.rule.ServiceTestRule;
 
 import org.eclipse.paho.client.mqttv3.IMqttActionListener;
 import org.eclipse.paho.client.mqttv3.IMqttMessageListener;
+import org.eclipse.paho.client.mqttv3.MqttMessage;
 import org.home2.BaseMqtt;
+import org.home2.DeviceInfo;
 import org.home2.HomeApplication;
 import org.home2.NotificationController;
 import org.home2.service.HomeService;
 import org.jetbrains.annotations.NotNull;
 import org.json.JSONException;
+import org.json.JSONObject;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Rule;
@@ -53,6 +56,20 @@ public class HomeServiceTest {
     }
 
     @Test
+    public void testNotificationOnAlarm() throws Exception {
+        startService();
+
+        JSONObject alarm = new JSONObject();
+        alarm.put("name", "kjdkhg");
+        alarm.put("state", DeviceInfo.STATE_ALARM);
+
+        mqtt.receiveMessage(alarm);
+
+        loopMainThreadUntilIdle();
+        verify(notificationController).notifyAlarm();
+    }
+
+    @Test
     public void deviceInteractions() throws TimeoutException, JSONException {
         HomeService service = startService();
 
@@ -61,10 +78,10 @@ public class HomeServiceTest {
         loopMainThreadUntilIdle();
         assertMessageSent("{name: abc, cmd: on}");
 
-        service.device("qwe").status();
+        service.device("qwe").state();
 
         loopMainThreadUntilIdle();
-        assertMessageSent("{name: qwe, cmd: status}");
+        assertMessageSent("{name: qwe, cmd: state}");
     }
 
     @Test
@@ -117,6 +134,10 @@ public class HomeServiceTest {
             if (getConnectivityListener() != null) {
                 getConnectivityListener().onConnected();
             }
+        }
+
+        void receiveMessage(JSONObject message) throws Exception {
+            getSubscribeListener().messageArrived("home/out", new MqttMessage(message.toString().getBytes()));
         }
 
         @Override

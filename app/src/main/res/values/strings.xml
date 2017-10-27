@@ -8,4 +8,5 @@
 
     <string name="notification_text_connected">Connected</string>
     <string name="notification_text_disconnected">Disconnected</string>
+    <string name="notification_text_alarm">Alarm</string>
 </resources>

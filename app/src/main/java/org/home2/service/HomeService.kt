@@ -10,7 +10,6 @@ import android.content.Context
 import android.content.Intent
 import android.os.Binder
 import android.os.IBinder
-import android.util.Log
 import org.home2.*
 import org.home2.mqtt.ConnectCallback
 import org.home2.mqtt.HomeConnectivityChangedListener
@@ -49,6 +48,16 @@ class HomeService : Service() {
         }
     }
 
+    private val innerSubscribeListener = { message: String ->
+        try {
+            if (JSONObject(message).optInt("state") == DeviceInfo.STATE_ALARM) {
+                notificationController.notifyAlarm()
+            }
+        } catch (e: JSONException) {
+
+        }
+    }
+
     override fun onCreate() {
         super.onCreate()
         notificationController = (applicationContext as HomeApplication).notificationController
@@ -59,6 +68,8 @@ class HomeService : Service() {
         mqtt = (applicationContext as HomeApplication).mqtt
         mqtt.connectivityListener = HomeConnectivityChangedListener(connectionState as MutableLiveData<ConnectionState>)
         mqtt.connect(ConnectCallback(connectionState))
+
+        mqtt.subscribe(OUT_TOPIC, innerSubscribeListener)
     }
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
@@ -88,6 +99,7 @@ class HomeService : Service() {
     }
 
     override fun onDestroy() {
+        mqtt.unsubscribe(OUT_TOPIC, innerSubscribeListener)
         mqtt.disconnect()
         connectionState.removeObserver(notificationUpdater)
         super.onDestroy()
@@ -97,8 +109,6 @@ class HomeService : Service() {
 class DeviceLiveData(mqtt: BaseMqtt, private val deviceName: String) : BaseMqttLiveData<NetworkResource<DeviceInfo>>(mqtt, OUT_TOPIC) {
 
     override fun onNewMessage(message: JSONObject) {
-        Log.i(TAG, "${OUT_TOPIC}: $message")
-
         val name = message.optString("name")
         if (name != deviceName && name != HomeService.DEVICE_NAME_ALL) {
             return

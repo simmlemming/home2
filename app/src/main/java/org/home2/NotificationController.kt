@@ -42,7 +42,13 @@ open class NotificationController(private val context: Context) {
     }
 
     open fun notifyAlarm() {
+        val notification = with(newNotification(context)) {
+            setSmallIcon(R.drawable.ic_notification_small_alarm)
+            setContentText(context.getString(R.string.notification_text_alarm))
+            build()
+        }
 
+        notificationManager.notify(NOTIFICATION_ID, notification)
     }
 
     open fun newDisconnectedNotification(): Notification {
