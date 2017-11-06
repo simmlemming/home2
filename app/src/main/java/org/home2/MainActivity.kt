@@ -12,7 +12,9 @@ import android.support.v4.app.FragmentActivity
 import android.widget.TextView
 import org.home2.service.HomeService
 
-private const val SENSOR_NAME = "living_motion_01"
+private const val MOTION_SENSOR_NAME = "living_motion_01"
+private const val TEMP_SENSOR_NAME = "temp_sensor_01"
+private const val HUMIDITY_SENSOR_NAME = "humidity_sensor_01"
 
 class MainActivity : FragmentActivity() {
     companion object {
@@ -22,7 +24,9 @@ class MainActivity : FragmentActivity() {
         }
     }
 
-    private lateinit var room1MeterView: RoomMeterView
+    private lateinit var tempView: ValueView
+    private lateinit var humView: ValueView
+
     private lateinit var motionSensorView: MotionSensorView
     private lateinit var connectionStatusView: TextView
 
@@ -39,11 +43,9 @@ class MainActivity : FragmentActivity() {
                 connectionStatusView.text = it.toString()
             })
 
-            service!!.observe(SENSOR_NAME, this@MainActivity, Observer<NetworkResource<DeviceInfo>> {
-                it?.let {
-                    motionSensorView.setInfo(it)
-                }
-            })
+            service!!.observe(MOTION_SENSOR_NAME, this@MainActivity, motionSensorView)
+            service!!.observe(TEMP_SENSOR_NAME, this@MainActivity, tempView)
+            service!!.observe(HUMIDITY_SENSOR_NAME, this@MainActivity, humView)
 
             service!!.device(HomeService.DEVICE_NAME_ALL).state()
         }
@@ -53,7 +55,8 @@ class MainActivity : FragmentActivity() {
         super.onCreate(savedInstanceState)
 
         setContentView(R.layout.activity_main)
-        room1MeterView = findViewById(R.id.room_1)
+        tempView = findViewById(R.id.temp)
+        humView = findViewById(R.id.hum)
         motionSensorView = findViewById(R.id.motion_sensor)
         connectionStatusView = findViewById(R.id.connection_status)
 
@@ -75,7 +78,11 @@ class MainActivity : FragmentActivity() {
             }
         }
 
-        motionSensorView.name = SENSOR_NAME
+        tempView.name = TEMP_SENSOR_NAME
+        tempView.units = "°C"
+        humView.name = HUMIDITY_SENSOR_NAME
+        humView.units = "%"
+        motionSensorView.name = MOTION_SENSOR_NAME
 
         val homeService = Intent(this, HomeService::class.java)
         startService(homeService)

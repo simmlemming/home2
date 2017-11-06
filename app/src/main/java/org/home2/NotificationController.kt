@@ -9,7 +9,6 @@ import android.os.Build
 import android.support.v4.app.NotificationCompat
 import org.home2.service.HomeService
 
-@Suppress("ClassName")
 /**
  * Created by mtkachenko on 26/10/17.
  */

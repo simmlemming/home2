@@ -9,10 +9,19 @@
     android:padding="8dp"
     tools:context="org.home2.MainActivity">
 
-    <org.home2.RoomMeterView
-        android:id="@+id/room_1"
+    <org.home2.ValueView
+        android:id="@+id/temp"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:background="@drawable/white_rounded_rectangle"
+        android:elevation="4dp" />
+
+    <org.home2.ValueView
+        android:id="@+id/hum"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/temp"
+        android:layout_marginTop="16dp"
         android:background="@drawable/white_rounded_rectangle"
         android:elevation="4dp" />
 
@@ -20,7 +29,7 @@
         android:id="@+id/motion_sensor"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@id/room_1"
+        android:layout_below="@id/hum"
         android:layout_marginTop="16dp"
         android:background="@drawable/white_rounded_rectangle"
         android:elevation="4dp" />

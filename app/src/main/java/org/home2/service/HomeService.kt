@@ -116,7 +116,8 @@ class DeviceLiveData(mqtt: BaseMqtt, private val deviceName: String) : BaseMqttL
 
         val info: NetworkResource<DeviceInfo> = try {
             val state = message.getInt("state")
-            NetworkResource.success(DeviceInfo(deviceName, state))
+            val value = message.optInt("value")
+            NetworkResource.success(DeviceInfo(deviceName, state, value))
         } catch (e: JSONException) {
             NetworkResource.error(e)
         }

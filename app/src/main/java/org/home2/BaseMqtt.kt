@@ -1,5 +1,6 @@
 package org.home2
 
+import android.util.Log
 import org.eclipse.paho.client.mqttv3.IMqttActionListener
 import org.eclipse.paho.client.mqttv3.IMqttMessageListener
 import org.eclipse.paho.client.mqttv3.MqttMessage
@@ -52,6 +53,7 @@ abstract class BaseMqtt {
     }
 
     protected open fun onNewMessage(topic: String, message: MqttMessage) {
+        Log.i(TAG, "$topic --> $message")
         subscribeListeners[topic]?.forEach { listener ->
             listener.invoke(message.toString())
         }
