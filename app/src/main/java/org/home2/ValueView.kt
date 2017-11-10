@@ -13,6 +13,8 @@ class ValueView @JvmOverloads constructor(context: Context, attributeSet: Attrib
     var units: String = ""
     private lateinit var valueView: TextView
 
+    var listener : BaseDeviceView.Listener? = null
+
     private var value: Int by Delegates.observable(0, { _, _: Int, newValue: Int ->
         valueView.text = "$newValue $units"
     })
@@ -27,5 +29,9 @@ class ValueView @JvmOverloads constructor(context: Context, attributeSet: Attrib
         View.inflate(context, R.layout.value_view, this)
 
         valueView = findViewById(R.id.value)
+
+        setOnClickListener {
+            listener?.update(name)
+        }
     }
 }

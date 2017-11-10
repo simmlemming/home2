@@ -16,6 +16,10 @@ abstract class BaseDeviceView @JvmOverloads constructor(context: Context, attrib
     : FrameLayout(context, attributeSet, defStyleAttrs, styleRes),
         Observer<NetworkResource<DeviceInfo>> {
 
+    interface Listener {
+        fun update(name: String)
+    }
+
     private val nameView: TextView by lazy { findViewById<TextView>(R.id.name) }
     private val waitingView: View by lazy { findViewById<View>(R.id.waiting) }
 

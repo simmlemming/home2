@@ -32,6 +32,30 @@ class MainActivity : FragmentActivity() {
 
     private var service: HomeService? = null
 
+    private val baseDeviceListener = object : BaseDeviceView.Listener {
+        override fun update(name: String) {
+            service?.device(name)?.state()
+        }
+    }
+
+    private val motionSensorListener = object : MotionSensorView.Listener {
+        override fun update(name: String) {
+            service?.device(name)?.state()
+        }
+
+        override fun switchOn(name: String) {
+            service?.device(name)?.on()
+        }
+
+        override fun switchOff(name: String) {
+            service?.device(name)?.off()
+        }
+
+        override fun reset(name: String) {
+            service?.device(name)?.reset()
+        }
+    }
+
     private val serviceConnection = object : ServiceConnection {
         override fun onServiceDisconnected(name: ComponentName?) {
             service = null
@@ -60,29 +84,15 @@ class MainActivity : FragmentActivity() {
         motionSensorView = findViewById(R.id.motion_sensor)
         connectionStatusView = findViewById(R.id.connection_status)
 
-        motionSensorView.listener = object : MotionSensorView.Listener {
-            override fun update(name: String) {
-                service?.device(name)?.state()
-            }
-
-            override fun switchOn(name: String) {
-                service?.device(name)?.on()
-            }
-
-            override fun switchOff(name: String) {
-                service?.device(name)?.off()
-            }
-
-            override fun reset(name: String) {
-                service?.device(name)?.reset()
-            }
-        }
-
+        motionSensorView.name = MOTION_SENSOR_NAME
         tempView.name = TEMP_SENSOR_NAME
         tempView.units = "°C"
         humView.name = HUMIDITY_SENSOR_NAME
         humView.units = "%"
-        motionSensorView.name = MOTION_SENSOR_NAME
+
+        motionSensorView.listener = motionSensorListener
+        tempView.listener = baseDeviceListener
+        humView.listener = baseDeviceListener
 
         val homeService = Intent(this, HomeService::class.java)
         startService(homeService)

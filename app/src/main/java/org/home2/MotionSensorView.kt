@@ -10,11 +10,10 @@ import android.widget.Button
  */
 class MotionSensorView @JvmOverloads constructor(context: Context, attributeSet: AttributeSet? = null, defStyleAttrs: Int = 0, styleRes: Int = 0)
     : BaseDeviceView(context, attributeSet, defStyleAttrs, styleRes) {
-    interface Listener {
+    interface Listener : BaseDeviceView.Listener {
         fun switchOn(name: String)
         fun switchOff(name: String)
         fun reset(name: String)
-        fun update(name: String)
     }
 
     private lateinit var rootLayout: View
