@@ -1,44 +1,67 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:clipChildren="false"
-    android:clipToPadding="false"
-    android:padding="8dp"
-    tools:context="org.home2.MainActivity">
+    android:layout_height="wrap_content">
 
-    <org.home2.ValueView
-        android:id="@+id/temp"
+    <RelativeLayout
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:background="@drawable/white_rounded_rectangle"
-        android:elevation="4dp" />
+        android:layout_height="match_parent"
+        android:clipChildren="false"
+        android:clipToPadding="false"
+        android:padding="8dp"
+        tools:context="org.home2.MainActivity">
 
-    <org.home2.ValueView
-        android:id="@+id/hum"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/temp"
-        android:layout_marginTop="16dp"
-        android:background="@drawable/white_rounded_rectangle"
-        android:elevation="4dp" />
 
-    <org.home2.MotionSensorView
-        android:id="@+id/motion_sensor"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/hum"
-        android:layout_marginTop="16dp"
-        android:background="@drawable/white_rounded_rectangle"
-        android:elevation="4dp" />
+        <org.home2.ValueView
+            android:id="@+id/temp_01"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/white_rounded_rectangle"
+            android:elevation="4dp" />
 
-    <TextView
-        android:id="@+id/connection_status"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:layout_alignParentRight="true"
-        tools:text="Connected" />
-</RelativeLayout>
+        <org.home2.ValueView
+            android:id="@+id/hum_01"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/temp_01"
+            android:layout_marginTop="16dp"
+            android:background="@drawable/white_rounded_rectangle"
+            android:elevation="4dp" />
+
+        <org.home2.ValueView
+            android:id="@+id/temp_02"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/hum_01"
+            android:layout_marginTop="16dp"
+            android:background="@drawable/white_rounded_rectangle"
+            android:elevation="4dp" />
+
+        <org.home2.ValueView
+            android:id="@+id/hum_02"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/temp_02"
+            android:layout_marginTop="16dp"
+            android:background="@drawable/white_rounded_rectangle"
+            android:elevation="4dp" />
+
+        <org.home2.MotionSensorView
+            android:id="@+id/motion_sensor"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/hum_02"
+            android:layout_marginTop="16dp"
+            android:background="@drawable/white_rounded_rectangle"
+            android:elevation="4dp" />
+
+        <TextView
+            android:id="@+id/connection_status"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_alignParentRight="true"
+            tools:text="Connected" />
+    </RelativeLayout>
+</ScrollView>
