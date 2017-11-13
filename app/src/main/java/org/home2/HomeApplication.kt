@@ -11,14 +11,21 @@ import org.home2.mqtt.Mqtt
 const val TAG = "Home"
 
 class HomeApplication : Application() {
-    var mqtt: BaseMqtt = Mqtt(this)
+    lateinit var settings: HomeSettings
         private set
 
-    var notificationController = NotificationController(this)
+    lateinit var mqtt: BaseMqtt
+        private set
+
+    lateinit var notificationController: NotificationController
         private set
 
     override fun onCreate() {
         super.onCreate()
+
+        settings = HomeSettings(this)
+        mqtt = Mqtt(this)
+        notificationController = NotificationController(this)
 
         notificationController.createNotificationChannel()
     }

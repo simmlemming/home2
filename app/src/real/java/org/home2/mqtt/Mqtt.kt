@@ -1,11 +1,11 @@
 package org.home2.mqtt
 
-import android.content.Context
 import android.os.Handler
 import android.util.Log
 import org.eclipse.paho.android.service.MqttAndroidClient
 import org.eclipse.paho.client.mqttv3.*
 import org.home2.BaseMqtt
+import org.home2.HomeApplication
 import org.home2.TAG
 
 
@@ -13,11 +13,11 @@ import org.home2.TAG
  * Created by mtkachenko on 20/05/17.
  */
 private const val MQTT_SERVER_URL = "tcp://192.168.0.110"
-private const val MQTT_CLIENT_ID = "android-app"
 private const val MQTT_QOS = 1
 
-class Mqtt(context: Context) : BaseMqtt() {
-    private val mqttClient = MqttAndroidClient(context, MQTT_SERVER_URL, MQTT_CLIENT_ID)
+class Mqtt(app: HomeApplication) : BaseMqtt() {
+    private val mqttClientId = "android-app-" + app.settings.getInstanceId()
+    private val mqttClient = MqttAndroidClient(app, MQTT_SERVER_URL, mqttClientId)
     private val handler = Handler()
 
     init {

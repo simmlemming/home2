@@ -1,12 +1,12 @@
 package org.home2.mqtt
 
-import android.content.Context
 import android.util.Log
 import org.eclipse.paho.client.mqttv3.IMqttActionListener
 import org.eclipse.paho.client.mqttv3.IMqttMessageListener
 import org.eclipse.paho.client.mqttv3.MqttMessage
 import org.home2.BaseMqtt
 import org.home2.DeviceInfo
+import org.home2.HomeApplication
 import org.home2.TAG
 import org.home2.service.HomeService
 import org.json.JSONObject
@@ -18,7 +18,7 @@ import java.util.concurrent.TimeUnit
  * Created by mtkachenko on 29/05/17.
  */
 
-class Mqtt(context: Context) : BaseMqtt() {
+class Mqtt(app: HomeApplication) : BaseMqtt() {
     private val rand = Random()
     private var timer: Timer? = null
     private val executor = ScheduledThreadPoolExecutor(1)
