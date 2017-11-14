@@ -12,7 +12,7 @@ import android.support.v4.app.FragmentActivity
 import android.widget.TextView
 import org.home2.service.HomeService
 
-private const val MOTION_SENSOR_NAME = "motion_01"
+private const val MOTION_SENSOR_NAME = "motion_sensor_01"
 private const val TEMP_SENSOR_NAME_01 = "temp_sensor_01"
 private const val HUMIDITY_SENSOR_NAME_01 = "humidity_sensor_01"
 private const val TEMP_SENSOR_NAME_02 = "temp_sensor_02"
