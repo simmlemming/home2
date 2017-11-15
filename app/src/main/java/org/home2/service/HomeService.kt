@@ -47,16 +47,6 @@ class HomeService : LifecycleService() {
         }
     }
 
-    private val innerSubscribeListener = { message: String ->
-        try {
-            if (JSONObject(message).optInt("state") == DeviceInfo.STATE_ALARM) {
-                notificationController.notifyAlarm()
-            }
-        } catch (e: JSONException) {
-
-        }
-    }
-
     override fun onCreate() {
         super.onCreate()
         notificationController = (applicationContext as HomeApplication).notificationController
@@ -67,8 +57,6 @@ class HomeService : LifecycleService() {
         mqtt = (applicationContext as HomeApplication).mqtt
         mqtt.connectivityListener = HomeConnectivityChangedListener(connectionState as MutableLiveData<ConnectionState>)
         mqtt.connect(ConnectCallback(connectionState))
-
-        mqtt.subscribe(OUT_TOPIC, innerSubscribeListener)
 
         deviceRepository = (applicationContext as HomeApplication).deviceRepository
 
@@ -83,6 +71,14 @@ class HomeService : LifecycleService() {
 
                 if (networkResource?.state == NetworkResource.State.SUCCESS) {
                     deviceRepository.update(networkResource.data!!)
+                }
+
+                val alarm = deviceRepository.findAlarmed().isNotEmpty()
+
+                if (alarm) {
+                    notificationController.notifyAlarm()
+                } else {
+                    notificationController.notifyOk()
                 }
             })
         }
@@ -114,7 +110,6 @@ class HomeService : LifecycleService() {
     }
 
     override fun onDestroy() {
-        mqtt.unsubscribe(OUT_TOPIC, innerSubscribeListener)
         mqtt.disconnect()
         connectionState.removeObserver(notificationUpdater)
         super.onDestroy()

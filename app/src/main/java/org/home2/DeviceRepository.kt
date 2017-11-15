@@ -16,9 +16,13 @@ class DeviceRepository {
         put("motion_sensor_01", DeviceInfo.nameOnly("motion_sensor_01"))
     }
 
-    fun find(name: String): Collection<DeviceInfo> {
+    fun find(name: String) = find { device -> name == HomeService.DEVICE_NAME_ALL || device.name == name }
+
+    fun findAlarmed() = find { device -> device.state == DeviceInfo.STATE_ALARM }
+
+    private fun find(filter: (DeviceInfo) -> Boolean): Collection<DeviceInfo> {
         return devices
-                .filter({ entry -> name == HomeService.DEVICE_NAME_ALL || entry.key == name })
+                .filter { filter.invoke(it.value) }
                 .values
     }
 
@@ -30,5 +34,9 @@ class DeviceRepository {
         }
 
         devices[deviceInfo.name] = deviceInfo
+    }
+
+    fun add(deviceInfo: DeviceInfo) {
+        devices.put(deviceInfo.name, deviceInfo)
     }
 }

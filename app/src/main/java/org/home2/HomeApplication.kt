@@ -45,8 +45,14 @@ class HomeApplication : Application() {
     }
 
     @VisibleForTesting
+    fun setMockedDeviceRepository(deviceRepository: DeviceRepository) {
+        this.deviceRepository = deviceRepository
+    }
+
+    @VisibleForTesting
     fun cleanMockedDependencies() {
         mqtt = Mqtt(this)
         notificationController = NotificationController(this)
+        deviceRepository = DeviceRepository()
     }
 }

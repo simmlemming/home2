@@ -10,6 +10,7 @@ import org.eclipse.paho.client.mqttv3.IMqttMessageListener;
 import org.eclipse.paho.client.mqttv3.MqttMessage;
 import org.home2.BaseMqtt;
 import org.home2.DeviceInfo;
+import org.home2.DeviceRepository;
 import org.home2.HomeApplication;
 import org.home2.NotificationController;
 import org.home2.service.HomeService;
@@ -44,6 +45,7 @@ public class HomeServiceTest {
     private NotificationController notificationController;
     private MockedMqtt mqtt;
     private HomeApplication homeApplication;
+    private DeviceRepository deviceRepository;
 
     @Before
     public void setUp() {
@@ -53,20 +55,39 @@ public class HomeServiceTest {
 
         homeApplication.setMockedNotificationController(notificationController);
         homeApplication.setMockedMqtt(mqtt);
+
+        deviceRepository = new DeviceRepository();
+        homeApplication.setMockedDeviceRepository(deviceRepository);
     }
 
     @Test
     public void testNotificationOnAlarm() throws Exception {
+        deviceRepository.add(DeviceInfo.nameOnly("a"));
         startService();
 
         JSONObject alarm = new JSONObject();
-        alarm.put("name", "kjdkhg");
+        alarm.put("name", "a");
         alarm.put("state", DeviceInfo.STATE_ALARM);
 
         mqtt.receiveMessage(alarm);
 
         loopMainThreadUntilIdle();
         verify(notificationController).notifyAlarm();
+    }
+
+    @Test
+    public void testNotificationOnNotAlarm() throws Exception {
+        deviceRepository.add(new DeviceInfo("b", DeviceInfo.STATE_ALARM, 0));
+        startService();
+
+        JSONObject ok = new JSONObject();
+        ok.put("name", "b");
+        ok.put("state", DeviceInfo.STATE_OK);
+
+        mqtt.receiveMessage(ok);
+
+        loopMainThreadUntilIdle();
+        verify(notificationController).notifyOk();
     }
 
     @Test

@@ -50,6 +50,8 @@ open class NotificationController(private val context: Context) {
         notificationManager.notify(NOTIFICATION_ID, notification)
     }
 
+    open fun notifyOk() = notifyConnected()
+
     open fun newDisconnectedNotification(): Notification {
         return with(newNotification(context)) {
             setSmallIcon(R.drawable.ic_notification_small_disconnected)
