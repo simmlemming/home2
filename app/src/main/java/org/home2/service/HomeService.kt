@@ -1,11 +1,7 @@
 package org.home2.service
 
 import android.app.PendingIntent
-import android.app.Service
-import android.arch.lifecycle.LifecycleOwner
-import android.arch.lifecycle.LiveData
-import android.arch.lifecycle.MutableLiveData
-import android.arch.lifecycle.Observer
+import android.arch.lifecycle.*
 import android.content.Context
 import android.content.Intent
 import android.os.Binder
@@ -21,7 +17,7 @@ import org.json.JSONObject
  * Created by mtkachenko on 21/10/17.
  */
 
-class HomeService : Service() {
+class HomeService : LifecycleService() {
     companion object {
         const val OUT_TOPIC = "home/out"
         const val IN_TOPIC = "home/in"
@@ -38,7 +34,10 @@ class HomeService : Service() {
 
     private lateinit var mqtt: BaseMqtt
     private lateinit var notificationController: NotificationController
-    private val liveData: MutableMap<String, DeviceLiveData> = mutableMapOf()
+    private lateinit var deviceRepository: DeviceRepository
+
+    private val repoLiveDatas: MutableMap<String, DeviceLiveData> = mutableMapOf()
+    private val uiLiveDatas: MutableMap<String, MutableLiveData<NetworkResource<DeviceInfo>>> = mutableMapOf()
 
     val connectionState: LiveData<ConnectionState> = MutableLiveData<ConnectionState>()
     private val notificationUpdater = Observer<ConnectionState> { connectionState ->
@@ -70,9 +69,27 @@ class HomeService : Service() {
         mqtt.connect(ConnectCallback(connectionState))
 
         mqtt.subscribe(OUT_TOPIC, innerSubscribeListener)
+
+        deviceRepository = (applicationContext as HomeApplication).deviceRepository
+
+        deviceRepository.getAll().forEach {
+            val ld = DeviceLiveData(mqtt, it.name)
+            repoLiveDatas[it.name] = ld
+        }
+
+        repoLiveDatas.forEach { entry ->
+            entry.value.observe(this, Observer { networkResource ->
+                uiLiveDatas[networkResource?.data?.name]?.value = networkResource
+
+                if (networkResource?.state == NetworkResource.State.SUCCESS) {
+                    deviceRepository.update(networkResource.data!!)
+                }
+            })
+        }
     }
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
+        super.onStartCommand(intent, flags, startId)
         if (ACTION_STOP == intent?.action) {
             stopSelf()
         }
@@ -81,6 +98,7 @@ class HomeService : Service() {
     }
 
     override fun onBind(intent: Intent?): IBinder {
+        super.onBind(intent)
         return HomeBinder()
     }
 
@@ -88,14 +106,11 @@ class HomeService : Service() {
         val service = this@HomeService
     }
 
-    fun device(deviceName: String) = DeviceInteraction(deviceName, mqtt, liveData)
+    fun device(deviceName: String) = DeviceInteraction(deviceName, mqtt, deviceRepository, uiLiveDatas)
 
     fun observe(deviceName: String, owner: LifecycleOwner, observer: Observer<NetworkResource<DeviceInfo>>) {
-        if (liveData[deviceName] == null) {
-            liveData[deviceName] = DeviceLiveData(mqtt, deviceName)
-        }
-
-        liveData[deviceName]!!.observe(owner, observer)
+        uiLiveDatas.getOrPut(deviceName) { MutableLiveData<NetworkResource<DeviceInfo>>() }
+        uiLiveDatas[deviceName]!!.observe(owner, observer)
     }
 
     override fun onDestroy() {

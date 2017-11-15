@@ -11,6 +11,9 @@ import org.home2.mqtt.Mqtt
 const val TAG = "Home"
 
 class HomeApplication : Application() {
+    lateinit var deviceRepository: DeviceRepository
+        private set
+
     lateinit var settings: HomeSettings
         private set
 
@@ -26,6 +29,7 @@ class HomeApplication : Application() {
         settings = HomeSettings(this)
         mqtt = Mqtt(this)
         notificationController = NotificationController(this)
+        deviceRepository = DeviceRepository()
 
         notificationController.createNotificationChannel()
     }
