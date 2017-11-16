@@ -3,7 +3,7 @@ package org.home2
 /**
  * Created by mtkachenko on 21/10/17.
  */
-data class DeviceInfo(val name: String, val state: Int, val value: Int) {
+data class DeviceInfo(val name: String, val room: String, val state: Int, val value: Int, val signal: Int) {
 //    enum class Type(val typeAsString: String) {
 //        MOTION_SENSOR("motion_sensor"),
 //        TEMP_SENSOR("temp_sensor"),
@@ -23,6 +23,6 @@ data class DeviceInfo(val name: String, val state: Int, val value: Int) {
         const val STATE_ALARM = 4
 
         @JvmStatic
-        fun nameOnly(name: String) = DeviceInfo(name, STATE_INIT, 0)
+        fun nameOnly(name: String, room: String) = DeviceInfo(name, room, STATE_INIT, 0, 0)
     }
 }

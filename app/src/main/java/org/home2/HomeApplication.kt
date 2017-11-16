@@ -27,9 +27,9 @@ class HomeApplication : Application() {
         super.onCreate()
 
         settings = HomeSettings(this)
+        deviceRepository = DeviceRepository()
         mqtt = Mqtt(this)
         notificationController = NotificationController(this)
-        deviceRepository = DeviceRepository()
 
         notificationController.createNotificationChannel()
     }

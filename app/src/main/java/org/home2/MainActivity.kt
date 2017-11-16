@@ -101,6 +101,7 @@ class MainActivity : FragmentActivity() {
         connectionStatusView = findViewById(R.id.connection_status)
 
         motionSensorView.name = MOTION_SENSOR_NAME
+
         temp01View.name = TEMP_SENSOR_NAME_01
         temp01View.units = "°C"
         hum01View.name = HUMIDITY_SENSOR_NAME_01

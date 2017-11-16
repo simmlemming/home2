@@ -22,7 +22,9 @@ class Mqtt(app: HomeApplication) : BaseMqtt() {
     private val rand = Random()
     private var timer: Timer? = null
     private val executor = ScheduledThreadPoolExecutor(1)
-    private val knownDeviceNames = listOf<String>("living_motion_01", "living_motion_02", "temp_sensor_01", "humidity_sensor_01")
+    private val knownDevices = app
+            .deviceRepository
+            .getAll()
 
     override fun subscribeInner(topic: String, listener: IMqttMessageListener) {
 
@@ -32,9 +34,12 @@ class Mqtt(app: HomeApplication) : BaseMqtt() {
 
     }
 
-    private fun newResponse(name: String, state: Int): JSONObject {
+    private fun newResponse(deviceInfo: DeviceInfo, state: Int, value: Int, signal: Int): JSONObject {
         return JSONObject().apply {
-            put("name", name)
+            put("name", deviceInfo.name)
+            put("room", deviceInfo.room)
+            put("value", value)
+            put("signal", -66)
             put("state", state)
         }
     }
@@ -42,8 +47,15 @@ class Mqtt(app: HomeApplication) : BaseMqtt() {
     override fun connect(listener: IMqttActionListener) {
         listener.onSuccess(null)
         timer = Timer()
-        timer!!.scheduleAtFixedRate(TempSensorUpdates(), rand.nextInt(1000).toLong(), 1000L)
-        timer!!.scheduleAtFixedRate(HumSensorUpdates(), rand.nextInt(1000).toLong(), 1000L)
+
+        knownDevices
+                .filter { !it.name.contains("temp") }
+                .forEach { timer!!.scheduleAtFixedRate(TempSensorUpdates(it), rand.nextInt(1000).toLong(), 1000L) }
+
+        knownDevices
+                .filter { !it.name.contains("humidity") }
+                .forEach { timer!!.scheduleAtFixedRate(HumSensorUpdates(it), rand.nextInt(1000).toLong(), 1000L) }
+
 //        timer!!.scheduleAtFixedRate(MotionSensorUpdates("living_motion_01"), 0, 2000L)
     }
 
@@ -63,14 +75,14 @@ class Mqtt(app: HomeApplication) : BaseMqtt() {
         val cmd = messageObject.optString("cmd")
         val name = messageObject.optString("name")
 
-        val namesToRespondTo = if (name == HomeService.DEVICE_NAME_ALL) knownDeviceNames else listOf(name)
+        val devicesToRespondTo = if (name == HomeService.DEVICE_NAME_ALL) knownDevices else knownDevices.filter { it.name == name }
 
-        namesToRespondTo.forEach { nameToRespondTo ->
+        devicesToRespondTo.forEach { deviceToRespondTo ->
             val response: JSONObject? = when (cmd) {
-                "on" -> newResponse(nameToRespondTo, DeviceInfo.STATE_OK)
-                "off" -> newResponse(nameToRespondTo, DeviceInfo.STATE_OFF)
-                "reset" -> newResponse(nameToRespondTo, DeviceInfo.STATE_OK)
-                "state" -> newResponse(nameToRespondTo, DeviceInfo.STATE_OK)
+                "on" -> newResponse(deviceToRespondTo, DeviceInfo.STATE_OK, 45, -96)
+                "off" -> newResponse(deviceToRespondTo, DeviceInfo.STATE_OFF, 11, -96)
+                "reset" -> newResponse(deviceToRespondTo, DeviceInfo.STATE_OK, 23, -96)
+                "state" -> newResponse(deviceToRespondTo, DeviceInfo.STATE_OK, 98, -96)
                 else -> null
             }
 
@@ -80,32 +92,21 @@ class Mqtt(app: HomeApplication) : BaseMqtt() {
         }
     }
 
-    private inner class TempSensorUpdates : TimerTask() {
+    private open inner class TempSensorUpdates(private val device: DeviceInfo) : TimerTask() {
         override fun run() {
-            val temp = rand.nextInt(15) + 15
-            val tempUpdate = JSONObject().apply {
-                put("name", "temp_sensor_01")
-                put("state", 1)
-                put("value", temp)
-            }
-
+            val tempUpdate = newResponse(device, DeviceInfo.STATE_OK, newValue(), newSignal())
             val message = MqttMessage(tempUpdate.toString().toByteArray())
             subscribeListener.messageArrived("home/out", message)
         }
+
+        open protected fun newSignal() = -69
+
+        open protected fun newValue() = rand.nextInt(15) + 15
     }
 
-    private inner class HumSensorUpdates : TimerTask() {
-        override fun run() {
-            val hum = rand.nextInt(30) + 30
-            val tempUpdate = JSONObject().apply {
-                put("name", "humidity_sensor_01")
-                put("state", 1)
-                put("value", hum)
-            }
-
-            val message = MqttMessage(tempUpdate.toString().toByteArray())
-            subscribeListener.messageArrived("home/out", message)
-        }
+    private inner class HumSensorUpdates(private val name: DeviceInfo) : TempSensorUpdates(name) {
+        override fun newValue() = rand.nextInt(30) + 30
+        override fun newSignal() = -73
     }
 
     private inner class MotionSensorUpdates(val deviceName: String) : TimerTask() {
@@ -115,6 +116,7 @@ class Mqtt(app: HomeApplication) : BaseMqtt() {
             val motionUpdate = JSONObject()
             motionUpdate.put("name", deviceName)
             motionUpdate.put("room", "living_room")
+            motionUpdate.put("signal", -81)
             motionUpdate.put("type", "motion_sensor")
             motionUpdate.put("state", state)
 

@@ -62,7 +62,7 @@ public class HomeServiceTest {
 
     @Test
     public void testNotificationOnAlarm() throws Exception {
-        deviceRepository.add(DeviceInfo.nameOnly("a"));
+        deviceRepository.add(DeviceInfo.nameOnly("a", "b"));
         startService();
 
         JSONObject alarm = new JSONObject();
@@ -77,7 +77,7 @@ public class HomeServiceTest {
 
     @Test
     public void testNotificationOnNotAlarm() throws Exception {
-        deviceRepository.add(new DeviceInfo("b", DeviceInfo.STATE_ALARM, 0));
+        deviceRepository.add(new DeviceInfo("b", "c", DeviceInfo.STATE_ALARM, 0, 0));
         startService();
 
         JSONObject ok = new JSONObject();

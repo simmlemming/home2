@@ -22,6 +22,8 @@ abstract class BaseDeviceView @JvmOverloads constructor(context: Context, attrib
 
     private val nameView: TextView by lazy { findViewById<TextView>(R.id.name) }
     private val waitingView: View by lazy { findViewById<View>(R.id.waiting) }
+    private val roomNameView: TextView by lazy { findViewById<TextView>(R.id.room) }
+    private val signalView: TextView by lazy { findViewById<TextView>(R.id.signal) }
 
     var name: String by Delegates.observable("unknown") { _, _, newValue ->
         nameView.text = newValue
@@ -30,6 +32,9 @@ abstract class BaseDeviceView @JvmOverloads constructor(context: Context, attrib
     override fun onChanged(info: NetworkResource<DeviceInfo>?) {
         backgroundTintList = ColorStateList.valueOf(info?.data.bgColor(context))
         waitingView.visibility = if (info?.state == NetworkResource.State.LOADING) View.VISIBLE else View.GONE
+        roomNameView.text = info?.data?.room
+        val signal = info?.data?.signal ?: 0
+        signalView.text = if (signal == 0) "" else "$signal mDb"
     }
 }
 

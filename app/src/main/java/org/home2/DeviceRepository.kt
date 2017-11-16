@@ -7,13 +7,13 @@ import org.home2.service.HomeService
  */
 class DeviceRepository {
     private val devices = mutableMapOf<String, DeviceInfo>().apply {
-        put("temp_sensor_01", DeviceInfo.nameOnly("temp_sensor_01"))
-        put("humidity_sensor_01", DeviceInfo.nameOnly("humidity_sensor_01"))
-        put("temp_sensor_02", DeviceInfo.nameOnly("temp_sensor_02"))
-        put("humidity_sensor_02", DeviceInfo.nameOnly("humidity_sensor_02"))
-        put("temp_sensor_03", DeviceInfo.nameOnly("temp_sensor_03"))
-        put("humidity_sensor_03", DeviceInfo.nameOnly("humidity_sensor_03"))
-        put("motion_sensor_01", DeviceInfo.nameOnly("motion_sensor_01"))
+        put("temp_sensor_01", DeviceInfo.nameOnly("temp_sensor_01", "brown_bedroom"))
+        put("humidity_sensor_01", DeviceInfo.nameOnly("humidity_sensor_01", "brown_bedroom"))
+        put("temp_sensor_02", DeviceInfo.nameOnly("temp_sensor_02", "violet_bedroom"))
+        put("humidity_sensor_02", DeviceInfo.nameOnly("humidity_sensor_02", "violet_bedroom"))
+        put("temp_sensor_03", DeviceInfo.nameOnly("temp_sensor_03", "green_bedroom"))
+        put("humidity_sensor_03", DeviceInfo.nameOnly("humidity_sensor_03", "green_bedroom"))
+        put("motion_sensor_01", DeviceInfo.nameOnly("motion_sensor_01", "living_room"))
     }
 
     fun find(name: String) = find { device -> name == HomeService.DEVICE_NAME_ALL || device.name == name }
