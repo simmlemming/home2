@@ -6,6 +6,8 @@ class HomeConnectOptions : MqttConnectOptions() {
     init {
         isAutomaticReconnect = true
         isCleanSession = false
-        connectionTimeout = 5;
+        connectionTimeout = 5
+        userName = MQTT_USERNAME
+        password = MQTT_PASSWORD.toCharArray()
     }
 }

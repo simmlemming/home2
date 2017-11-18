@@ -1,0 +1,40 @@
+Local MQTT config
+$ cat /etc/mosquitto/mosquitto.conf
+pid_file /var/run/mosquitto.pid
+
+persistence true
+persistence_location /var/lib/mosquitto/
+
+log_dest file /var/log/mosquitto/mosquitto.log
+include_dir /etc/mosquitto/conf.d
+
+connection bridge-01
+remote_username ---
+remote_password ---
+address mqtt.---.im:8883
+bridge_capath /etc/ssl/certs
+topic # out 0
+topic # in 0
+
+
+
+Remote MQTT config
+$ cat /etc/mosquitto/mosquitto.conf
+pid_file /var/run/mosquitto.pid
+
+persistence true
+persistence_location /var/lib/mosquitto/
+
+log_dest file /var/log/mosquitto/mosquitto.log
+
+include_dir /etc/mosquitto/conf.d
+
+allow_anonymous false
+password_file /etc/mosquitto/passwd
+
+listener 1883 localhost
+
+listener 8883
+certfile /etc/letsencrypt/live/mqtt.myhome.im/cert.pem
+cafile /etc/letsencrypt/live/mqtt.myhome.im/chain.pem
+keyfile /etc/letsencrypt/live/mqtt.myhome.im/privkey.pem

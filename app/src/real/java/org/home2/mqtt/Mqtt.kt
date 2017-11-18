@@ -8,14 +8,12 @@ import org.home2.BaseMqtt
 import org.home2.HomeApplication
 import org.home2.TAG
 
-
 /**
  * Created by mtkachenko on 20/05/17.
  */
-private const val MQTT_SERVER_URL = "tcp://192.168.0.110"
 private const val MQTT_QOS = 1
 
-class Mqtt(app: HomeApplication) : BaseMqtt() {
+class Mqtt(private val app: HomeApplication) : BaseMqtt() {
     private val mqttClientId = "android-app-" + app.settings.getInstanceId()
     private val mqttClient = MqttAndroidClient(app, MQTT_SERVER_URL, mqttClientId)
     private val handler = Handler()
