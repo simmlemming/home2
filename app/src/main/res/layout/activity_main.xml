@@ -73,6 +73,15 @@
             android:background="@drawable/white_rounded_rectangle"
             android:elevation="4dp" />
 
+        <org.home2.MotionSensorView
+            android:id="@+id/motion_sensor_02"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/motion_sensor"
+            android:layout_marginTop="16dp"
+            android:background="@drawable/white_rounded_rectangle"
+            android:elevation="4dp" />
+
         <TextView
             android:id="@+id/connection_status"
             android:layout_width="wrap_content"

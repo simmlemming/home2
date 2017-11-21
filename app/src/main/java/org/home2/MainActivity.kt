@@ -12,7 +12,8 @@ import android.support.v4.app.FragmentActivity
 import android.widget.TextView
 import org.home2.service.HomeService
 
-private const val MOTION_SENSOR_NAME = "motion_sensor_01"
+private const val MOTION_SENSOR_NAME_01 = "motion_sensor_01"
+private const val MOTION_SENSOR_NAME_02 = "motion_sensor_02"
 private const val TEMP_SENSOR_NAME_01 = "temp_sensor_01"
 private const val HUMIDITY_SENSOR_NAME_01 = "humidity_sensor_01"
 private const val TEMP_SENSOR_NAME_02 = "temp_sensor_02"
@@ -35,7 +36,8 @@ class MainActivity : FragmentActivity() {
     private lateinit var temp03View: ValueView
     private lateinit var hum03View: ValueView
 
-    private lateinit var motionSensorView: MotionSensorView
+    private lateinit var motionSensor01View: MotionSensorView
+    private lateinit var motionSensor02View: MotionSensorView
     private lateinit var connectionStatusView: TextView
 
     private var service: HomeService? = null
@@ -75,7 +77,8 @@ class MainActivity : FragmentActivity() {
                 connectionStatusView.text = it.toString()
             })
 
-            service!!.observe(MOTION_SENSOR_NAME, this@MainActivity, motionSensorView)
+            service!!.observe(MOTION_SENSOR_NAME_01, this@MainActivity, motionSensor01View)
+            service!!.observe(MOTION_SENSOR_NAME_02, this@MainActivity, motionSensor02View)
             service!!.observe(TEMP_SENSOR_NAME_01, this@MainActivity, temp01View)
             service!!.observe(HUMIDITY_SENSOR_NAME_01, this@MainActivity, hum01View)
             service!!.observe(TEMP_SENSOR_NAME_02, this@MainActivity, temp02View)
@@ -97,10 +100,12 @@ class MainActivity : FragmentActivity() {
         hum02View = findViewById(R.id.hum_02)
         temp03View = findViewById(R.id.temp_03)
         hum03View = findViewById(R.id.hum_03)
-        motionSensorView = findViewById(R.id.motion_sensor)
+        motionSensor01View = findViewById(R.id.motion_sensor)
+        motionSensor02View = findViewById(R.id.motion_sensor_02)
         connectionStatusView = findViewById(R.id.connection_status)
 
-        motionSensorView.name = MOTION_SENSOR_NAME
+        motionSensor01View.name = MOTION_SENSOR_NAME_01
+        motionSensor02View.name = MOTION_SENSOR_NAME_02
 
         temp01View.name = TEMP_SENSOR_NAME_01
         temp01View.units = "°C"
@@ -117,7 +122,8 @@ class MainActivity : FragmentActivity() {
         hum03View.name = HUMIDITY_SENSOR_NAME_03
         hum03View.units = "%"
 
-        motionSensorView.listener = motionSensorListener
+        motionSensor01View.listener = motionSensorListener
+        motionSensor02View.listener = motionSensorListener
 
         temp01View.listener = baseDeviceListener
         hum01View.listener = baseDeviceListener
