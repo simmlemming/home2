@@ -137,6 +137,8 @@ class MainActivity : FragmentActivity() {
         val homeService = Intent(this, HomeService::class.java)
         startService(homeService)
         bindService(homeService, serviceConnection, Context.BIND_AUTO_CREATE)
+
+        applicationContext.sendGcmToken()
     }
 
     override fun onDestroy() {

@@ -53,7 +53,7 @@ abstract class BaseMqtt {
     }
 
     protected open fun onNewMessage(topic: String, message: MqttMessage) {
-        Log.i(TAG, "$topic --> $message")
+        Log.v(TAG, "$topic --> $message")
         subscribeListeners[topic]?.forEach { listener ->
             listener.invoke(message.toString())
         }

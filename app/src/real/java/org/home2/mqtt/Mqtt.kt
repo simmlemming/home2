@@ -61,11 +61,6 @@ class Mqtt(private val app: HomeApplication) : BaseMqtt() {
         }
     }
 
-    override fun onNewMessage(topic: String, message: MqttMessage) {
-        Log.i(TAG, "$topic --> $message")
-        super.onNewMessage(topic, message)
-    }
-
     private inner class HomeMqttCallback : MqttCallbackExtended {
         override fun connectComplete(reconnect: Boolean, serverURI: String?) {
             connectivityListener?.onConnected()

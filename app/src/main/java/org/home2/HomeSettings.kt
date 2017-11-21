@@ -17,6 +17,8 @@ class HomeSettings(private val context: Context) {
         val preferences = context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE)
         return preferences.getStringOrElse(KEY_INSTANCE_ID) { UUID.randomUUID().toString() }
     }
+
+    fun getInstanceName() = getInstanceId().substring(0, 5)
 }
 
 private fun SharedPreferences.getStringOrElse(key: String, factory: (Unit) -> String): String {

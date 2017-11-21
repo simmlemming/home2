@@ -22,8 +22,21 @@
             </intent-filter>
         </activity>
 
-        <service android:name="org.eclipse.paho.android.service.MqttService"/>
-        <service android:name=".service.HomeService"/>
+        <service android:name="org.eclipse.paho.android.service.MqttService" />
+        <service android:name=".service.HomeService" />
+
+        <service android:name=".gcm.HomeInstanceIdService">
+            <intent-filter>
+                <action android:name="com.google.firebase.INSTANCE_ID_EVENT" />
+            </intent-filter>
+        </service>
+
+        <service
+            android:name=".gcm.HomeMessagingService">
+            <intent-filter>
+                <action android:name="com.google.firebase.MESSAGING_EVENT"/>
+            </intent-filter>
+        </service>
     </application>
 
 </manifest>
