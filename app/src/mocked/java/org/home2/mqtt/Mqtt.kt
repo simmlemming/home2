@@ -49,11 +49,11 @@ class Mqtt(app: HomeApplication) : BaseMqtt() {
         timer = Timer()
 
         knownDevices
-                .filter { !it.name.contains("temp") }
+                .filter { it.name.contains("temp") }
                 .forEach { timer!!.scheduleAtFixedRate(TempSensorUpdates(it), rand.nextInt(1000).toLong(), 1000L) }
 
         knownDevices
-                .filter { !it.name.contains("humidity") }
+                .filter { it.name.contains("humidity") }
                 .forEach { timer!!.scheduleAtFixedRate(HumSensorUpdates(it), rand.nextInt(1000).toLong(), 1000L) }
 
 //        timer!!.scheduleAtFixedRate(MotionSensorUpdates("living_motion_01"), 0, 2000L)
@@ -104,7 +104,7 @@ class Mqtt(app: HomeApplication) : BaseMqtt() {
         open protected fun newValue() = rand.nextInt(15) + 15
     }
 
-    private inner class HumSensorUpdates(private val name: DeviceInfo) : TempSensorUpdates(name) {
+    private inner class HumSensorUpdates(deviceInfo: DeviceInfo) : TempSensorUpdates(deviceInfo) {
         override fun newValue() = rand.nextInt(30) + 30
         override fun newSignal() = -73
     }

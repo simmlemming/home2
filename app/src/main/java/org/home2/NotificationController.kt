@@ -7,7 +7,6 @@ import android.content.Context
 import android.graphics.BitmapFactory
 import android.os.Build
 import android.support.v4.app.NotificationCompat
-import org.home2.service.HomeService
 
 /**
  * Created by mtkachenko on 26/10/17.
@@ -68,9 +67,6 @@ open class NotificationController(private val context: Context) {
             setPriority(NotificationCompat.PRIORITY_LOW)
             setCategory(Notification.CATEGORY_SYSTEM)
             setContentIntent(MainActivity.intentToOpen(context))
-
-            val stop = NotificationCompat.Action.Builder(0, context.getString(R.string.stop), HomeService.stopIntent(context))
-            addAction(stop.build())
         }
     }
 

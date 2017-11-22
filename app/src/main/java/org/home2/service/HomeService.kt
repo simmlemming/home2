@@ -1,8 +1,6 @@
 package org.home2.service
 
-import android.app.PendingIntent
 import android.arch.lifecycle.*
-import android.content.Context
 import android.content.Intent
 import android.os.Binder
 import android.os.IBinder
@@ -22,14 +20,6 @@ class HomeService : LifecycleService() {
         const val OUT_TOPIC = "home/out"
         const val IN_TOPIC = "home/in"
         const val DEVICE_NAME_ALL = "all"
-        private const val ACTION_STOP = "stop"
-
-        fun stopIntent(context: Context): PendingIntent {
-            val intent = Intent(context, HomeService::class.java)
-            intent.action = ACTION_STOP
-
-            return PendingIntent.getService(context, 0, intent, PendingIntent.FLAG_CANCEL_CURRENT)
-        }
     }
 
     private lateinit var mqtt: BaseMqtt
@@ -39,19 +29,10 @@ class HomeService : LifecycleService() {
     private val liveDevices: MutableMap<String, DeviceLiveData> = mutableMapOf()
 
     val connectionState: LiveData<ConnectionState> = MutableLiveData<ConnectionState>()
-    private val notificationUpdater = Observer<ConnectionState> { connectionState ->
-        when (connectionState) {
-            ConnectionState.CONNECTED -> notificationController.notifyConnected()
-            else -> notificationController.notifyDisconnected()
-        }
-    }
 
     override fun onCreate() {
         super.onCreate()
         notificationController = (applicationContext as HomeApplication).notificationController
-        startForeground(NotificationController.NOTIFICATION_ID, notificationController.newDisconnectedNotification())
-
-        connectionState.observeForever(notificationUpdater)
 
         mqtt = (applicationContext as HomeApplication).mqtt
         mqtt.connectivityListener = HomeConnectivityChangedListener(connectionState as MutableLiveData<ConnectionState>)
@@ -76,10 +57,6 @@ class HomeService : LifecycleService() {
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
         super.onStartCommand(intent, flags, startId)
-        if (ACTION_STOP == intent?.action) {
-            stopSelf()
-        }
-
         return START_STICKY
     }
 
@@ -100,7 +77,6 @@ class HomeService : LifecycleService() {
 
     override fun onDestroy() {
         mqtt.disconnect()
-        connectionState.removeObserver(notificationUpdater)
         super.onDestroy()
     }
 }

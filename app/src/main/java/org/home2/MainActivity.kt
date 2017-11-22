@@ -109,16 +109,19 @@ class MainActivity : FragmentActivity() {
 
         temp01View.name = TEMP_SENSOR_NAME_01
         temp01View.units = "°C"
+
         hum01View.name = HUMIDITY_SENSOR_NAME_01
         hum01View.units = "%"
 
         temp02View.name = TEMP_SENSOR_NAME_02
         temp02View.units = "°C"
+
         hum02View.name = HUMIDITY_SENSOR_NAME_02
         hum02View.units = "%"
 
         temp03View.name = TEMP_SENSOR_NAME_03
         temp03View.units = "°C"
+
         hum03View.name = HUMIDITY_SENSOR_NAME_03
         hum03View.units = "%"
 
@@ -135,7 +138,6 @@ class MainActivity : FragmentActivity() {
         hum03View.listener = baseDeviceListener
 
         val homeService = Intent(this, HomeService::class.java)
-        startService(homeService)
         bindService(homeService, serviceConnection, Context.BIND_AUTO_CREATE)
 
         applicationContext.sendGcmToken()
