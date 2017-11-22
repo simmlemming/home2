@@ -9,7 +9,6 @@ import org.eclipse.paho.client.mqttv3.IMqttActionListener;
 import org.eclipse.paho.client.mqttv3.IMqttMessageListener;
 import org.eclipse.paho.client.mqttv3.MqttMessage;
 import org.home2.BaseMqtt;
-import org.home2.DeviceInfo;
 import org.home2.DeviceRepository;
 import org.home2.HomeApplication;
 import org.home2.NotificationController;
@@ -61,36 +60,6 @@ public class HomeServiceTest {
     }
 
     @Test
-    public void testNotificationOnAlarm() throws Exception {
-        deviceRepository.add(DeviceInfo.nameOnly("a", "b"));
-        startService();
-
-        JSONObject alarm = new JSONObject();
-        alarm.put("name", "a");
-        alarm.put("state", DeviceInfo.STATE_ALARM);
-
-        mqtt.receiveMessage(alarm);
-
-        loopMainThreadUntilIdle();
-        verify(notificationController).notifyAlarm();
-    }
-
-    @Test
-    public void testNotificationOnNotAlarm() throws Exception {
-        deviceRepository.add(new DeviceInfo("b", "c", DeviceInfo.STATE_ALARM, 0, 0));
-        startService();
-
-        JSONObject ok = new JSONObject();
-        ok.put("name", "b");
-        ok.put("state", DeviceInfo.STATE_OK);
-
-        mqtt.receiveMessage(ok);
-
-        loopMainThreadUntilIdle();
-        verify(notificationController).notifyOk();
-    }
-
-    @Test
     public void deviceInteractions() throws TimeoutException, JSONException {
         HomeService service = startService();
 
@@ -103,19 +72,6 @@ public class HomeServiceTest {
 
         loopMainThreadUntilIdle();
         assertMessageSent("{name: qwe, cmd: state}");
-    }
-
-    @Test
-    public void testNotificationUpdatesOnConnectivityChanges() throws TimeoutException, InterruptedException {
-        startService();
-
-        mqtt.breakConnection();
-        loopMainThreadUntilIdle();
-        verify(notificationController).notifyDisconnected();
-
-        mqtt.restoreConnection();
-        loopMainThreadUntilIdle();
-        verify(notificationController).notifyConnected();
     }
 
     private void assertMessageSent(String expectedMessage) throws JSONException {
