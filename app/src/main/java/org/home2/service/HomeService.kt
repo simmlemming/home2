@@ -36,8 +36,7 @@ class HomeService : LifecycleService() {
     private lateinit var notificationController: NotificationController
     private lateinit var deviceRepository: DeviceRepository
 
-    private val repoLiveDatas: MutableMap<String, DeviceLiveData> = mutableMapOf()
-    private val uiLiveDatas: MutableMap<String, MutableLiveData<NetworkResource<DeviceInfo>>> = mutableMapOf()
+    private val liveDevices: MutableMap<String, DeviceLiveData> = mutableMapOf()
 
     val connectionState: LiveData<ConnectionState> = MutableLiveData<ConnectionState>()
     private val notificationUpdater = Observer<ConnectionState> { connectionState ->
@@ -62,23 +61,14 @@ class HomeService : LifecycleService() {
 
         deviceRepository.getAll().forEach {
             val ld = DeviceLiveData(mqtt, it.name)
-            repoLiveDatas[it.name] = ld
+            liveDevices[it.name] = ld
         }
 
-        repoLiveDatas.forEach { entry ->
+        liveDevices.forEach { entry ->
             entry.value.observe(this, Observer { networkResource ->
-                uiLiveDatas[networkResource?.data?.name]?.value = networkResource
 
                 if (networkResource?.state == NetworkResource.State.SUCCESS) {
                     deviceRepository.update(networkResource.data!!)
-                }
-
-                val alarm = deviceRepository.findAlarmed().isNotEmpty()
-
-                if (alarm) {
-                    notificationController.notifyAlarm()
-                } else {
-                    notificationController.notifyOk()
                 }
             })
         }
@@ -102,11 +92,10 @@ class HomeService : LifecycleService() {
         val service = this@HomeService
     }
 
-    fun device(deviceName: String) = DeviceInteraction(deviceName, mqtt, deviceRepository, uiLiveDatas)
+    fun device(deviceName: String) = DeviceInteraction(deviceName, mqtt, deviceRepository, liveDevices)
 
     fun observe(deviceName: String, owner: LifecycleOwner, observer: Observer<NetworkResource<DeviceInfo>>) {
-        uiLiveDatas.getOrPut(deviceName) { MutableLiveData<NetworkResource<DeviceInfo>>() }
-        uiLiveDatas[deviceName]!!.observe(owner, observer)
+        liveDevices[deviceName]?.observe(owner, observer)
     }
 
     override fun onDestroy() {
