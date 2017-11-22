@@ -74,15 +74,15 @@ open class NotificationController(private val context: Context) {
             setChannelId("home")
             setLargeIcon(BitmapFactory.decodeResource(context.resources, R.drawable.ic_notification_large_icon))
             setContentTitle(context.getString(R.string.app_name))
-            setPriority(NotificationCompat.PRIORITY_LOW)
-            setCategory(Notification.CATEGORY_SYSTEM)
+            setPriority(NotificationCompat.PRIORITY_MAX)
+            setCategory(Notification.CATEGORY_ALARM)
             setContentIntent(MainActivity.intentToOpen(context))
         }
     }
 
     fun createNotificationChannel() {
         if (Build.VERSION.SDK_INT >= 26) {
-            val channel = NotificationChannel("home", "Home", NotificationManager.IMPORTANCE_LOW)
+            val channel = NotificationChannel("home", "Home", NotificationManager.IMPORTANCE_HIGH)
             notificationManager.createNotificationChannel(channel)
         }
     }
