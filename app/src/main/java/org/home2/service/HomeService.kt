@@ -8,7 +8,6 @@ import org.home2.*
 import org.home2.mqtt.ConnectCallback
 import org.home2.mqtt.HomeConnectivityChangedListener
 import org.home2.service.HomeService.Companion.OUT_TOPIC
-import org.json.JSONException
 import org.json.JSONObject
 
 /**
@@ -23,20 +22,16 @@ class HomeService : LifecycleService() {
     }
 
     private lateinit var mqtt: BaseMqtt
-    private lateinit var notificationController: NotificationController
     private lateinit var deviceRepository: DeviceRepository
 
     private val liveDevices: MutableMap<String, DeviceLiveData> = mutableMapOf()
-
-    val connectionState: LiveData<ConnectionState> = MutableLiveData<ConnectionState>()
+    val liveConnectionState: LiveData<ConnectionState> = MutableLiveData<ConnectionState>()
 
     override fun onCreate() {
         super.onCreate()
-        notificationController = (applicationContext as HomeApplication).notificationController
-
         mqtt = (applicationContext as HomeApplication).mqtt
-        mqtt.connectivityListener = HomeConnectivityChangedListener(connectionState as MutableLiveData<ConnectionState>)
-        mqtt.connect(ConnectCallback(connectionState))
+        mqtt.connectivityListener = HomeConnectivityChangedListener(liveConnectionState as MutableLiveData<ConnectionState>)
+        mqtt.connect(ConnectCallback(liveConnectionState))
 
         deviceRepository = (applicationContext as HomeApplication).deviceRepository
 
@@ -76,8 +71,8 @@ class HomeService : LifecycleService() {
     }
 
     override fun onDestroy() {
-        mqtt.disconnect()
         super.onDestroy()
+        mqtt.disconnect()
     }
 }
 
@@ -89,14 +84,11 @@ class DeviceLiveData(mqtt: BaseMqtt, private val deviceName: String) : BaseMqttL
             return
         }
 
-        val info: NetworkResource<DeviceInfo> = try {
-            val state = message.getInt("state")
-            val room = message.optString("room", "")!!
-            val value = message.optInt("value")
-            val signal = message.optInt("signal")
-            NetworkResource.success(DeviceInfo(deviceName, room, state, value, signal))
-        } catch (e: JSONException) {
-            NetworkResource.error(e)
+        val deviceInfo = DeviceInfo.fromJson(message)
+        val info = if (deviceInfo == null) {
+            NetworkResource.error(IllegalArgumentException("Cannot parse message $message"))
+        } else {
+            NetworkResource.success(deviceInfo)
         }
 
         postValue(info)

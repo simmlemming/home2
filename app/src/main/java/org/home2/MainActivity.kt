@@ -41,6 +41,7 @@ class MainActivity : FragmentActivity() {
     private lateinit var connectionStatusView: TextView
 
     private var service: HomeService? = null
+    private lateinit var notificationController : NotificationController
 
     private val baseDeviceListener = object : BaseDeviceView.Listener {
         override fun update(name: String) {
@@ -73,7 +74,7 @@ class MainActivity : FragmentActivity() {
 
         override fun onServiceConnected(name: ComponentName?, binder: IBinder?) {
             service = (binder as HomeService.HomeBinder).service
-            service!!.connectionState.observe(this@MainActivity, Observer<ConnectionState> {
+            service!!.liveConnectionState.observe(this@MainActivity, Observer<ConnectionState> {
                 connectionStatusView.text = it.toString()
             })
 
@@ -103,6 +104,8 @@ class MainActivity : FragmentActivity() {
         motionSensor01View = findViewById(R.id.motion_sensor)
         motionSensor02View = findViewById(R.id.motion_sensor_02)
         connectionStatusView = findViewById(R.id.connection_status)
+
+        notificationController = applicationContext.notificationController
 
         motionSensor01View.name = MOTION_SENSOR_NAME_01
         motionSensor02View.name = MOTION_SENSOR_NAME_02
@@ -141,6 +144,17 @@ class MainActivity : FragmentActivity() {
         bindService(homeService, serviceConnection, Context.BIND_AUTO_CREATE)
 
         applicationContext.sendGcmToken()
+    }
+
+    override fun onStart() {
+        super.onStart()
+        notificationController.cancelNotification()
+        notificationController.muteAllNotifications = true
+    }
+
+    override fun onStop() {
+        notificationController.muteAllNotifications = false
+        super.onStop()
     }
 
     override fun onDestroy() {

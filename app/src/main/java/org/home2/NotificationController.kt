@@ -19,27 +19,13 @@ open class NotificationController(private val context: Context) {
     private val notificationManager: NotificationManager
         get() = context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
 
-    open fun notifyDisconnected() {
-        val notification = with(newNotification(context)) {
-            setSmallIcon(R.drawable.ic_notification_small_disconnected)
-            setContentText(context.getString(R.string.notification_text_disconnected))
-            build()
-        }
-
-        notificationManager.notify(NOTIFICATION_ID, notification)
-    }
-
-    open fun notifyConnected() {
-        val notification = with(newNotification(context)) {
-            setSmallIcon(R.drawable.ic_notification_small_connected)
-            setContentText(context.getString(R.string.notification_text_connected))
-            build()
-        }
-
-        notificationManager.notify(NOTIFICATION_ID, notification)
-    }
+    var muteAllNotifications = false
 
     open fun notifyAlarm() {
+        if (muteAllNotifications) {
+            return
+        }
+
         val notification = with(newNotification(context)) {
             setSmallIcon(R.drawable.ic_notification_small_alarm)
             setContentText(context.getString(R.string.notification_text_alarm))
@@ -49,15 +35,39 @@ open class NotificationController(private val context: Context) {
         notificationManager.notify(NOTIFICATION_ID, notification)
     }
 
-    open fun notifyOk() = notifyConnected()
-
-    open fun newDisconnectedNotification(): Notification {
-        return with(newNotification(context)) {
-            setSmallIcon(R.drawable.ic_notification_small_disconnected)
-            setContentText(context.getString(R.string.notification_text_connected))
-            build()
-        }
+    fun cancelNotification() {
+        notificationManager.cancel(NOTIFICATION_ID)
     }
+
+//    open fun notifyDisconnected() {
+//        val notification = with(newNotification(context)) {
+//            setSmallIcon(R.drawable.ic_notification_small_disconnected)
+//            setContentText(context.getString(R.string.notification_text_disconnected))
+//            build()
+//        }
+//
+//        notificationManager.notify(NOTIFICATION_ID, notification)
+//    }
+//
+//    open fun notifyConnected() {
+//        val notification = with(newNotification(context)) {
+//            setSmallIcon(R.drawable.ic_notification_small_connected)
+//            setContentText(context.getString(R.string.notification_text_connected))
+//            build()
+//        }
+//
+//        notificationManager.notify(NOTIFICATION_ID, notification)
+//    }
+
+//    open fun notifyOk() = notifyConnected()
+//
+//    open fun newDisconnectedNotification(): Notification {
+//        return with(newNotification(context)) {
+//            setSmallIcon(R.drawable.ic_notification_small_disconnected)
+//            setContentText(context.getString(R.string.notification_text_connected))
+//            build()
+//        }
+//    }
 
     private fun newNotification(context: Context): NotificationCompat.Builder {
         return NotificationCompat.Builder(context, "home").apply {
