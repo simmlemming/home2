@@ -1,53 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout android:id="@+id/root"
+    xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     android:orientation="vertical"
     android:padding="12dp">
 
-    <TextView
-        android:id="@+id/room"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:gravity="center"
-        android:text="green_bedroom"
-        android:textSize="24sp" />
-
-    <TextView
-        android:id="@+id/name"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/room"
-        android:gravity="center"
-        android:text="humidity_sensor_01"
-        android:textSize="14sp" />
-
-    <TextView
-        android:id="@+id/signal"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/room"
-        android:layout_toRightOf="@id/name"
-        android:gravity="center"
-        android:text="-67 mDb"
-        android:layout_marginLeft="8dp"
-        android:textSize="14sp" />
-
-    <ProgressBar
-        android:id="@+id/waiting"
-        style="@style/Base.Widget.AppCompat.ProgressBar"
-        android:layout_width="16dp"
-        android:layout_height="16dp"
-        android:layout_marginLeft="8dp"
-        android:layout_marginTop="8dp"
-        android:layout_toRightOf="@id/room"
-        android:visibility="visible" />
+    <include layout="@layout/device_view_header" />
 
     <TextView
         android:id="@+id/value"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@id/signal"
+        android:layout_below="@id/header"
         android:layout_centerHorizontal="true"
         android:gravity="center"
         android:text="--"

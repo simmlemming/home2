@@ -10,6 +10,7 @@ import android.widget.Button
  */
 class MotionSensorView @JvmOverloads constructor(context: Context, attributeSet: AttributeSet? = null, defStyleAttrs: Int = 0, styleRes: Int = 0)
     : BaseDeviceView(context, attributeSet, defStyleAttrs, styleRes) {
+
     interface Listener : BaseDeviceView.Listener {
         fun switchOn(name: String)
         fun switchOff(name: String)
@@ -19,7 +20,6 @@ class MotionSensorView @JvmOverloads constructor(context: Context, attributeSet:
     private lateinit var rootLayout: View
     private lateinit var onOffView: Button
     private lateinit var resetView: Button
-    private lateinit var updateView: Button
     private lateinit var waitingView: View
 
     private val switchOnListener = SwitchOnOnClickListener()
@@ -34,7 +34,6 @@ class MotionSensorView @JvmOverloads constructor(context: Context, attributeSet:
         rootLayout = findViewById(R.id.root)
         onOffView = findViewById(R.id.on_off)
         resetView = findViewById(R.id.reset)
-        updateView = findViewById(R.id.update)
         waitingView = findViewById(R.id.waiting)
 
         onOffView.setOnClickListener { _ ->
@@ -45,7 +44,7 @@ class MotionSensorView @JvmOverloads constructor(context: Context, attributeSet:
             listener?.reset(name)
         }
 
-        updateView.setOnClickListener { _ ->
+        rootLayout.setOnClickListener { _ ->
             listener?.update(name)
         }
     }

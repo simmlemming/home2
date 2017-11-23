@@ -4,9 +4,10 @@ import android.arch.lifecycle.Observer
 import android.content.Context
 import android.content.res.ColorStateList
 import android.util.AttributeSet
-import android.view.View
 import android.widget.FrameLayout
+import android.widget.ImageView
 import android.widget.TextView
+import android.widget.ViewFlipper
 import kotlin.properties.Delegates
 
 /**
@@ -20,21 +21,20 @@ abstract class BaseDeviceView @JvmOverloads constructor(context: Context, attrib
         fun update(name: String)
     }
 
-    private val nameView: TextView by lazy { findViewById<TextView>(R.id.name) }
-    private val waitingView: View by lazy { findViewById<View>(R.id.waiting) }
+//    private val nameView: TextView? by lazy { findViewById<TextView>(R.id.name) }
+    private val signalWaitingViewFlipper: ViewFlipper by lazy { findViewById<ViewFlipper>(R.id.signal_waiting) }
     private val roomNameView: TextView by lazy { findViewById<TextView>(R.id.room) }
-    private val signalView: TextView by lazy { findViewById<TextView>(R.id.signal) }
+    private val signalView: ImageView by lazy { findViewById<ImageView>(R.id.signal) }
 
     var name: String by Delegates.observable("unknown") { _, _, newValue ->
-        nameView.text = newValue
+//        nameView?.text = newValue
     }
 
     override fun onChanged(info: NetworkResource<DeviceInfo>?) {
         backgroundTintList = ColorStateList.valueOf(info?.data.bgColor(context))
-        waitingView.visibility = if (info?.state == NetworkResource.State.LOADING) View.VISIBLE else View.GONE
+        signalWaitingViewFlipper.displayedChild = if (info?.state == NetworkResource.State.LOADING) 1 else 0
         roomNameView.text = info?.data?.room
-        val signal = info?.data?.signal ?: 0
-        signalView.text = if (signal == 0) "" else "$signal mDb"
+        signalView.setWifiSignalStrength(info?.data?.signal ?: 0)
     }
 }
 
@@ -50,4 +50,14 @@ private fun DeviceInfo?.bgColor(context: Context): Int {
     }
 
     return context.resources.getColor(resId, context.theme)
+}
+
+private fun ImageView.setWifiSignalStrength(signal: Int) {
+    val level = Math.abs(signal)
+
+    if (level == 0) {
+        setImageLevel(Int.MAX_VALUE) // This shows empty drawable
+    } else {
+        setImageLevel(level)
+    }
 }

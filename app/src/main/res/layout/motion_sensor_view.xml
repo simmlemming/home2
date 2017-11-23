@@ -6,47 +6,12 @@
     android:orientation="vertical"
     android:padding="12dp">
 
-    <TextView
-        android:id="@+id/room"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Living room 01"
-        android:textSize="24dp" />
-
-    <TextView
-        android:id="@+id/name"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/room"
-        android:gravity="center"
-        android:text="humidity_sensor_01"
-        android:textSize="14sp" />
-
-    <TextView
-        android:id="@+id/signal"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/room"
-        android:layout_toRightOf="@id/name"
-        android:gravity="center"
-        android:text="-67 mDb"
-        android:layout_marginLeft="8dp"
-        android:textSize="14sp" />
-
-    <ProgressBar
-        android:id="@+id/waiting"
-        style="@style/Base.Widget.AppCompat.ProgressBar"
-        android:layout_width="16dp"
-        android:layout_height="16dp"
-        android:layout_marginLeft="8dp"
-        android:layout_marginTop="8dp"
-        android:layout_toRightOf="@id/room"
-        android:visibility="gone" />
+    <include layout="@layout/device_view_header" />
 
     <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@id/name"
+        android:layout_below="@id/header"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="8dp"
         android:orientation="horizontal">
@@ -57,13 +22,6 @@
             android:layout_height="wrap_content"
             android:backgroundTint="@color/white"
             android:text="@string/on" />
-
-        <Button
-            android:id="@+id/update"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:backgroundTint="@color/white"
-            android:text="@string/update" />
 
         <Button
             android:id="@+id/reset"
