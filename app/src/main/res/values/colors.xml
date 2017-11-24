@@ -14,5 +14,5 @@
     <color name="sensor_error">#BCAAA4</color>
     <color name="sensor_unknown">#90CAF9</color>
 
-    <color name="wifi_signal_color">#333333</color>
+    <color name="wifi_signal_color">#616161</color>
 </resources>
