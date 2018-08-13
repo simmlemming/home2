@@ -15,12 +15,13 @@ class MotionSensorView @JvmOverloads constructor(context: Context, attributeSet:
         fun switchOn(name: String)
         fun switchOff(name: String)
         fun reset(name: String)
+        fun pause(name: String, sec: Int)
     }
 
     private lateinit var rootLayout: View
     private lateinit var onOffView: Button
     private lateinit var resetView: Button
-    private lateinit var waitingView: View
+    private lateinit var pauseView: View
 
     private val switchOnListener = SwitchOnOnClickListener()
     private val switchOffListener = SwitchOffOnClickListener()
@@ -34,7 +35,7 @@ class MotionSensorView @JvmOverloads constructor(context: Context, attributeSet:
         rootLayout = findViewById(R.id.root)
         onOffView = findViewById(R.id.on_off)
         resetView = findViewById(R.id.reset)
-        waitingView = findViewById(R.id.waiting)
+        pauseView = findViewById(R.id.pause)
 
         onOffView.setOnClickListener { _ ->
             listener?.switchOn(name)
@@ -42,6 +43,10 @@ class MotionSensorView @JvmOverloads constructor(context: Context, attributeSet:
 
         resetView.setOnClickListener { _ ->
             listener?.reset(name)
+        }
+
+        pauseView.setOnClickListener { _ ->
+            listener?.pause(name, 2)
         }
 
         rootLayout.setOnClickListener { _ ->

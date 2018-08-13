@@ -65,6 +65,10 @@ class MainActivity : FragmentActivity() {
         override fun reset(name: String) {
             service?.device(name)?.reset()
         }
+
+        override fun pause(name: String, sec: Int) {
+            service?.device(name)?.pause(sec)
+        }
     }
 
     private val serviceConnection = object : ServiceConnection {

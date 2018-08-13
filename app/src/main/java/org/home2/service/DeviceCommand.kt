@@ -25,15 +25,21 @@ abstract class DeviceCommand(private val deviceName: String, private val deviceR
             override fun mqttMessage() = mqttMessage(deviceName, "state")
             override fun expectedDeviceInfo(deviceInfo: DeviceInfo) = deviceInfo
         }
+
+        fun pause(deviceName: String, deviceRepository: DeviceRepository, sec: Int): DeviceCommand = object : DeviceCommand(deviceName, deviceRepository) {
+            override fun mqttMessage() = mqttMessage(deviceName, "pause", sec)
+            override fun expectedDeviceInfo(deviceInfo: DeviceInfo) = deviceInfo
+        }
     }
 
     abstract fun mqttMessage(): JSONObject
     protected abstract fun expectedDeviceInfo(deviceInfo: DeviceInfo): DeviceInfo
 
-    protected fun mqttMessage(deviceName: String, cmd: String): JSONObject {
+    protected fun mqttMessage(deviceName: String, cmd: String, value: Int? = null): JSONObject {
         return JSONObject().apply {
             put("name", deviceName)
             put("cmd", cmd)
+            value?.let { put("value", it) }
         }
     }
 

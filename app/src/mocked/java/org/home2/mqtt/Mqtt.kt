@@ -56,7 +56,7 @@ class Mqtt(app: HomeApplication) : BaseMqtt() {
                 .filter { it.name.contains("humidity") }
                 .forEach { timer!!.scheduleAtFixedRate(HumSensorUpdates(it), rand.nextInt(1000).toLong(), 1000L) }
 
-//        timer!!.scheduleAtFixedRate(MotionSensorUpdates("living_motion_01"), 0, 2000L)
+//        timer!!.scheduleAtFixedRate(MotionSensorUpdates("motion_sensor_01"), 0, 2000L)
     }
 
     override fun disconnect() {

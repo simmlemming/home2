@@ -72,6 +72,11 @@ public class HomeServiceTest {
 
         loopMainThreadUntilIdle();
         assertMessageSent("{name: qwe, cmd: state}");
+
+        service.device("q").pause(3);
+
+        loopMainThreadUntilIdle();
+        assertMessageSent("{name: q, cmd: pause, value: 3}");
     }
 
     private void assertMessageSent(String expectedMessage) throws JSONException {

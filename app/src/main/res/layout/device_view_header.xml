@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout android:id="@+id/header"
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/header"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     android:gravity="center_vertical"
@@ -17,8 +17,8 @@
 
     <ViewFlipper
         android:id="@+id/signal_waiting"
-        android:layout_width="18dp"
-        android:layout_height="18dp"
+        android:layout_width="24dp"
+        android:layout_height="24dp"
         android:layout_marginLeft="8dp"
         android:layout_toRightOf="@id/room">
 
@@ -36,6 +36,15 @@
             android:layout_height="16dp"
             android:layout_gravity="center"
             android:indeterminateTint="@color/wifi_signal_color"
+            android:visibility="visible" />
+
+        <ImageView
+            android:id="@+id/paused"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:tint="@color/wifi_signal_color"
+            android:layout_gravity="center"
+            android:src="@drawable/ic_pause_24px"
             android:visibility="visible" />
     </ViewFlipper>
 </LinearLayout>

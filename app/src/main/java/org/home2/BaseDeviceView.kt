@@ -21,22 +21,29 @@ abstract class BaseDeviceView @JvmOverloads constructor(context: Context, attrib
         fun update(name: String)
     }
 
-//    private val nameView: TextView? by lazy { findViewById<TextView>(R.id.name) }
+    //    private val nameView: TextView? by lazy { findViewById<TextView>(R.id.name) }
     private val signalWaitingViewFlipper: ViewFlipper by lazy { findViewById<ViewFlipper>(R.id.signal_waiting) }
     private val roomNameView: TextView by lazy { findViewById<TextView>(R.id.room) }
     private val signalView: ImageView by lazy { findViewById<ImageView>(R.id.signal) }
 
     var name: String by Delegates.observable("unknown") { _, _, newValue ->
-//        nameView?.text = newValue
+        //        nameView?.text = newValue
     }
 
     override fun onChanged(info: NetworkResource<DeviceInfo>?) {
         backgroundTintList = ColorStateList.valueOf(info?.data.bgColor(context))
-        signalWaitingViewFlipper.displayedChild = if (info?.state == NetworkResource.State.LOADING) 1 else 0
+        signalWaitingViewFlipper.displayedChild = info.toDisplayedChild()
         roomNameView.text = info?.data?.room
         signalView.setWifiSignalStrength(info?.data?.signal ?: 0)
     }
 }
+
+private fun NetworkResource<DeviceInfo>?.toDisplayedChild() =
+        when {
+            this?.data?.state == 6 -> 2
+            this?.state == NetworkResource.State.LOADING -> 1
+            else -> 0
+        }
 
 private fun DeviceInfo?.bgColor(context: Context): Int {
     val resId = when {
@@ -46,6 +53,7 @@ private fun DeviceInfo?.bgColor(context: Context): Int {
         state == 2 -> R.color.sensor_connecting
         state == 3 -> R.color.sensor_error
         state == 4 -> R.color.sensor_alarm
+        state == 6 -> R.color.sensor_off
         else -> R.color.sensor_unknown
     }
 
