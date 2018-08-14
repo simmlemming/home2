@@ -40,20 +40,21 @@ abstract class BaseDeviceView @JvmOverloads constructor(context: Context, attrib
 
 private fun NetworkResource<DeviceInfo>?.toDisplayedChild() =
         when {
-            this?.data?.state == 6 -> 2
             this?.state == NetworkResource.State.LOADING -> 1
+            this?.data?.state == DeviceInfo.STATE_PAUSED -> 2
             else -> 0
         }
 
 private fun DeviceInfo?.bgColor(context: Context): Int {
     val resId = when {
         this == null -> R.color.sensor_unknown
-        state == 0 -> R.color.sensor_off
-        state == 1 -> R.color.sensor_ok
-        state == 2 -> R.color.sensor_connecting
-        state == 3 -> R.color.sensor_error
-        state == 4 -> R.color.sensor_alarm
-        state == 6 -> R.color.sensor_off
+        state == DeviceInfo.STATE_OFF -> R.color.sensor_off
+        state == DeviceInfo.STATE_OK -> R.color.sensor_ok
+        state == DeviceInfo.STATE_INIT -> R.color.sensor_connecting
+        state == DeviceInfo.STATE_ERROR -> R.color.sensor_error
+        state == DeviceInfo.STATE_ALARM -> R.color.sensor_alarm
+        state == DeviceInfo.STATE_ALARM_PENDING -> R.color.sensor_connecting
+        state == DeviceInfo.STATE_PAUSED -> R.color.sensor_off
         else -> R.color.sensor_unknown
     }
 

@@ -25,6 +25,8 @@ data class DeviceInfo(val name: String, val room: String, val state: Int, val va
         const val STATE_INIT = 2
         const val STATE_ERROR = 3
         const val STATE_ALARM = 4
+        const val STATE_ALARM_PENDING = 5
+        const val STATE_PAUSED = 6
 
         fun nameOnly(name: String, room: String) = DeviceInfo(name, room, STATE_INIT, 0, 0)
 

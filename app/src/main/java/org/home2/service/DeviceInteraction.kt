@@ -21,8 +21,8 @@ class DeviceInteraction(private val deviceName: String, private val mqtt: BaseMq
     private fun execute(command: DeviceCommand) {
         mqtt.publish(HomeService.IN_TOPIC, command.mqttMessage().toString())
 
-        command.expectedDeviceInfoUpdates().forEach({ device ->
+        command.expectedDeviceInfoUpdates().forEach { device ->
             liveData[device.name]?.postValue(NetworkResource.loading(device))
-        })
+        }
     }
 }

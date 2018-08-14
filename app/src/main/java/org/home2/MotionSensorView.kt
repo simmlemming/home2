@@ -46,7 +46,7 @@ class MotionSensorView @JvmOverloads constructor(context: Context, attributeSet:
         }
 
         pauseView.setOnClickListener { _ ->
-            listener?.pause(name, 2)
+            listener?.pause(name, 5)
         }
 
         rootLayout.setOnClickListener { _ ->
