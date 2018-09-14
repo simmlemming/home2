@@ -48,7 +48,7 @@ class MainActivity : FragmentActivity() {
     private lateinit var connectionStatusView: TextView
 
     private var service: HomeService? = null
-    private lateinit var notificationController : NotificationController
+    private lateinit var notificationController: NotificationController
 
     private val baseDeviceListener = object : BaseDeviceView.Listener {
         override fun update(name: String) {
@@ -75,6 +75,12 @@ class MainActivity : FragmentActivity() {
 
         override fun pause(name: String, sec: Int) {
             service?.device(name)?.pause(sec)
+        }
+    }
+
+    private val cameraListener = object : CameraView.Listener {
+        override fun updatePicture(deviceName: String) {
+            service!!.refreshPicture(deviceName, Date())
         }
     }
 
@@ -157,6 +163,12 @@ class MainActivity : FragmentActivity() {
 
         temp03View.listener = baseDeviceListener
         hum03View.listener = baseDeviceListener
+
+        cameraO1View.name = CAMERA_NAME_01
+        cameraO1View.listener = cameraListener
+
+        cameraO2View.name = CAMERA_NAME_02
+        cameraO2View.listener = cameraListener
 
         val homeService = Intent(this, HomeService::class.java)
         bindService(homeService, serviceConnection, Context.BIND_AUTO_CREATE)

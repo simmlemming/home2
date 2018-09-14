@@ -11,7 +11,8 @@
         android:id="@+id/picture"
         android:layout_width="320dp"
         android:layout_height="240dp"
-        android:background="@color/sensor_off" />
+        android:background="@color/sensor_off"
+        android:foreground="?android:attr/selectableItemBackground" />
 
     <TextView
         android:id="@+id/error"

@@ -12,9 +12,16 @@ import org.home2.service.CameraLiveData
 class CameraView @JvmOverloads constructor(context: Context, attributeSet: AttributeSet? = null, defStyleAttrs: Int = 0, styleRes: Int = 0)
     : FrameLayout(context, attributeSet, defStyleAttrs, styleRes), Observer<NetworkResource<CameraLiveData.CameraDeviceInfo>> {
 
+    interface Listener {
+        fun updatePicture(deviceName: String)
+    }
+
     private lateinit var pictureView: ImageView
     private lateinit var errorView: TextView
     private lateinit var waitingView: View
+
+    lateinit var name: String
+    var listener: Listener? = null
 
     override fun onFinishInflate() {
         super.onFinishInflate()
@@ -23,6 +30,8 @@ class CameraView @JvmOverloads constructor(context: Context, attributeSet: Attri
         pictureView = findViewById(R.id.picture)
         errorView = findViewById(R.id.error)
         waitingView = findViewById(R.id.waiting)
+
+        pictureView.setOnClickListener { listener?.updatePicture(name) }
     }
 
     override fun onChanged(resource: NetworkResource<CameraLiveData.CameraDeviceInfo>?) {
