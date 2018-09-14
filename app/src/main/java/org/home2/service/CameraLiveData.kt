@@ -55,6 +55,6 @@ class CameraLiveData(private val deviceName: String, private val cameraIndex: In
 
     companion object {
         @SuppressLint("ConstantLocale")
-        private val DATE_FORMAT = SimpleDateFormat("yyyy-mm-dd-HH-MM-SS", Locale.getDefault())
+        private val DATE_FORMAT = SimpleDateFormat("yyyy-MM-dd-HH-mm-ss", Locale.getDefault())
     }
 }
