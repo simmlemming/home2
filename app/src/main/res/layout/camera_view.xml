@@ -5,14 +5,15 @@
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     android:orientation="vertical"
-    android:padding="12dp">
+    tools:ignore="HardcodedText">
 
-    <ImageView
+    <org.home2.ImageViewWithAspectRatio
         android:id="@+id/picture"
-        android:layout_width="320dp"
-        android:layout_height="240dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
         android:background="@color/sensor_off"
-        android:foreground="?android:attr/selectableItemBackground" />
+        android:foreground="?android:attr/selectableItemBackground"
+        tools:layout_height="240dp" />
 
     <TextView
         android:id="@+id/error"
@@ -29,4 +30,92 @@
         android:layout_alignParentLeft="true"
         android:layout_alignParentTop="true"
         android:layout_margin="8dp" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/picture"
+        android:orientation="vertical">
+
+        <HorizontalScrollView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:scrollbars="none">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <Button
+                    android:id="@+id/minus_hour"
+                    style="@style/SeekButton"
+                    android:text="-1h" />
+
+                <Button
+                    android:id="@+id/minus_ten_min"
+                    style="@style/SeekButton"
+                    android:text="-10m" />
+
+                <Button
+                    android:id="@+id/minus_min"
+                    style="@style/SeekButton"
+                    android:text="-1m" />
+
+                <Button
+                    android:id="@+id/minus_ten_sec"
+                    style="@style/SeekButton"
+                    android:text="-10s" />
+
+                <Button
+                    android:id="@+id/minus_five_sec"
+                    style="@style/SeekButton"
+                    android:text="-5s" />
+
+                <Button
+                    android:id="@+id/now"
+                    android:visibility="gone"
+                    style="@style/SeekButton"
+                    android:text="now" />
+            </LinearLayout>
+        </HorizontalScrollView>
+
+        <HorizontalScrollView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:scrollbars="none">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <Button
+                    android:id="@+id/plus_hour"
+                    style="@style/SeekButton"
+                    android:text="+1h" />
+
+                <Button
+                    android:id="@+id/plus_ten_min"
+                    style="@style/SeekButton"
+                    android:text="+10m" />
+
+                <Button
+                    android:id="@+id/plus_min"
+                    style="@style/SeekButton"
+                    android:text="+1m" />
+
+                <Button
+                    android:id="@+id/plus_ten_sec"
+                    style="@style/SeekButton"
+                    android:text="+10s" />
+
+                <Button
+                    android:id="@+id/plus_five_sec"
+                    style="@style/SeekButton"
+                    android:text="+5s" />
+            </LinearLayout>
+        </HorizontalScrollView>
+
+    </LinearLayout>
 </RelativeLayout>

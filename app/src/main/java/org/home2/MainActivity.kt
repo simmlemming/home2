@@ -79,8 +79,8 @@ class MainActivity : FragmentActivity() {
     }
 
     private val cameraListener = object : CameraView.Listener {
-        override fun updatePicture(deviceName: String) {
-            service!!.refreshPicture(deviceName, Date())
+        override fun updatePicture(deviceName: String, timestamp: Date?) {
+            service!!.refreshPicture(deviceName, timestamp ?: Date())
         }
     }
 
