@@ -1,6 +1,7 @@
 package org.home2.service
 
 import android.arch.lifecycle.*
+import android.arch.lifecycle.Observer
 import android.content.Intent
 import android.os.Binder
 import android.os.IBinder
@@ -9,11 +10,11 @@ import org.home2.mqtt.ConnectCallback
 import org.home2.mqtt.HomeConnectivityChangedListener
 import org.home2.service.HomeService.Companion.OUT_TOPIC
 import org.json.JSONObject
+import java.util.*
 
 /**
  * Created by mtkachenko on 21/10/17.
  */
-
 class HomeService : LifecycleService() {
     companion object {
         const val OUT_TOPIC = "home/out"
@@ -25,6 +26,7 @@ class HomeService : LifecycleService() {
     private lateinit var deviceRepository: DeviceRepository
 
     private val liveDevices: MutableMap<String, DeviceLiveData> = mutableMapOf()
+    private val liveCameras: MutableMap<String, CameraLiveData> = mutableMapOf()
     val liveConnectionState: LiveData<ConnectionState> = MutableLiveData<ConnectionState>()
 
     override fun onCreate() {
@@ -48,6 +50,9 @@ class HomeService : LifecycleService() {
                 }
             })
         }
+
+        liveCameras[CAMERA_NAME_01] = CameraLiveData(CAMERA_NAME_01, 0)
+        liveCameras[CAMERA_NAME_02] = CameraLiveData(CAMERA_NAME_02, 1)
     }
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
@@ -68,6 +73,14 @@ class HomeService : LifecycleService() {
 
     fun observe(deviceName: String, owner: LifecycleOwner, observer: Observer<NetworkResource<DeviceInfo>>) {
         liveDevices[deviceName]?.observe(owner, observer)
+    }
+
+    fun observeCamera(deviceName: String, owner: LifecycleOwner, observer: Observer<NetworkResource<CameraLiveData.CameraDeviceInfo>>) {
+        liveCameras[deviceName]?.observe(owner,  observer)
+    }
+
+    fun refreshPicture(deviceName: String, timestamp: Date) {
+        liveCameras[deviceName]?.refreshPicture(timestamp)
     }
 
     override fun onDestroy() {

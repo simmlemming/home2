@@ -11,6 +11,7 @@ import android.os.IBinder
 import android.support.v4.app.FragmentActivity
 import android.widget.TextView
 import org.home2.service.HomeService
+import java.util.*
 
 private const val MOTION_SENSOR_NAME_01 = "motion_sensor_01"
 private const val MOTION_SENSOR_NAME_02 = "motion_sensor_02"
@@ -20,6 +21,8 @@ private const val TEMP_SENSOR_NAME_02 = "temp_sensor_02"
 private const val HUMIDITY_SENSOR_NAME_02 = "humidity_sensor_02"
 private const val TEMP_SENSOR_NAME_03 = "temp_sensor_03"
 private const val HUMIDITY_SENSOR_NAME_03 = "humidity_sensor_03"
+const val CAMERA_NAME_01 = "camera_01"
+const val CAMERA_NAME_02 = "camera_02"
 
 class MainActivity : FragmentActivity() {
     companion object {
@@ -38,6 +41,10 @@ class MainActivity : FragmentActivity() {
 
     private lateinit var motionSensor01View: MotionSensorView
     private lateinit var motionSensor02View: MotionSensorView
+
+    private lateinit var cameraO1View: CameraView
+    private lateinit var cameraO2View: CameraView
+
     private lateinit var connectionStatusView: TextView
 
     private var service: HomeService? = null
@@ -90,8 +97,13 @@ class MainActivity : FragmentActivity() {
             service!!.observe(HUMIDITY_SENSOR_NAME_02, this@MainActivity, hum02View)
             service!!.observe(TEMP_SENSOR_NAME_03, this@MainActivity, temp03View)
             service!!.observe(HUMIDITY_SENSOR_NAME_03, this@MainActivity, hum03View)
+            service!!.observeCamera(CAMERA_NAME_01, this@MainActivity, cameraO1View)
+            service!!.observeCamera(CAMERA_NAME_02, this@MainActivity, cameraO2View)
 
             service!!.device(HomeService.DEVICE_NAME_ALL).state()
+
+            service!!.refreshPicture(CAMERA_NAME_01, Date())
+            service!!.refreshPicture(CAMERA_NAME_02, Date())
         }
     }
 
@@ -107,6 +119,8 @@ class MainActivity : FragmentActivity() {
         hum03View = findViewById(R.id.hum_03)
         motionSensor01View = findViewById(R.id.motion_sensor)
         motionSensor02View = findViewById(R.id.motion_sensor_02)
+        cameraO1View = findViewById(R.id.camera_01)
+        cameraO2View = findViewById(R.id.camera_02)
         connectionStatusView = findViewById(R.id.connection_status)
 
         notificationController = applicationContext.notificationController
