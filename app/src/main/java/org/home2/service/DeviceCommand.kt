@@ -30,6 +30,11 @@ abstract class DeviceCommand(private val deviceName: String, private val deviceR
             override fun mqttMessage() = mqttMessage(deviceName, "pause", sec)
             override fun expectedDeviceInfo(deviceInfo: DeviceInfo) = deviceInfo.copy(state = DeviceInfo.STATE_PAUSED)
         }
+
+        fun value(deviceName: String, deviceRepository: DeviceRepository, value: Int): DeviceCommand = object : DeviceCommand(deviceName, deviceRepository) {
+            override fun mqttMessage() = mqttMessage(deviceName, "value", value)
+            override fun expectedDeviceInfo(deviceInfo: DeviceInfo) = deviceInfo.copy(state = DeviceInfo.STATE_OK, value = value)
+        }
     }
 
     abstract fun mqttMessage(): JSONObject

@@ -4,33 +4,39 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
 
-    <RelativeLayout
+    <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:clipChildren="false"
         android:clipToPadding="false"
+        android:orientation="vertical"
         android:padding="8dp"
         tools:context="org.home2.MainActivity">
+
+        <org.home2.LightView
+            android:id="@+id/main_light"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
 
         <org.home2.CameraView
             android:id="@+id/camera_01"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:elevation="4dp" />
+            android:elevation="4dp"
+            android:visibility="gone" />
 
         <org.home2.CameraView
             android:id="@+id/camera_02"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_below="@id/camera_01"
             android:layout_marginTop="16dp"
-            android:elevation="4dp" />
+            android:elevation="4dp"
+            android:visibility="gone" />
 
         <org.home2.ValueView
             android:id="@+id/temp_01"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_below="@id/camera_02"
             android:layout_marginTop="16dp"
             android:background="@drawable/white_rounded_rectangle"
             android:elevation="4dp" />
@@ -39,7 +45,6 @@
             android:id="@+id/hum_01"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_below="@id/temp_01"
             android:layout_marginTop="16dp"
             android:background="@drawable/white_rounded_rectangle"
             android:elevation="4dp" />
@@ -48,25 +53,24 @@
             android:id="@+id/temp_02"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_below="@id/hum_01"
             android:layout_marginTop="16dp"
             android:background="@drawable/white_rounded_rectangle"
-            android:elevation="4dp" />
+            android:elevation="4dp"
+            android:visibility="gone" />
 
         <org.home2.ValueView
             android:id="@+id/hum_02"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_below="@id/temp_02"
             android:layout_marginTop="16dp"
             android:background="@drawable/white_rounded_rectangle"
-            android:elevation="4dp" />
+            android:elevation="4dp"
+            android:visibility="gone" />
 
         <org.home2.ValueView
             android:id="@+id/temp_03"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_below="@id/hum_02"
             android:layout_marginTop="16dp"
             android:background="@drawable/white_rounded_rectangle"
             android:elevation="4dp" />
@@ -75,7 +79,6 @@
             android:id="@+id/hum_03"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_below="@id/temp_03"
             android:layout_marginTop="16dp"
             android:background="@drawable/white_rounded_rectangle"
             android:elevation="4dp" />
@@ -83,8 +86,8 @@
         <org.home2.MotionSensorView
             android:id="@+id/motion_sensor"
             android:layout_width="wrap_content"
+            android:visibility="gone"
             android:layout_height="wrap_content"
-            android:layout_below="@id/hum_03"
             android:layout_marginTop="16dp"
             android:background="@drawable/white_rounded_rectangle"
             android:elevation="4dp" />
@@ -93,7 +96,6 @@
             android:id="@+id/motion_sensor_02"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_below="@id/motion_sensor"
             android:layout_marginTop="16dp"
             android:background="@drawable/white_rounded_rectangle"
             android:elevation="4dp" />
@@ -102,8 +104,6 @@
             android:id="@+id/connection_status"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignParentRight="true"
-            android:layout_alignParentBottom="true"
             tools:text="Connected" />
-    </RelativeLayout>
+    </LinearLayout>
 </ScrollView>

@@ -18,6 +18,8 @@ class DeviceInteraction(private val deviceName: String, private val mqtt: BaseMq
 
     fun pause(sec: Int) = execute(DeviceCommand.pause(deviceName, deviceRepository, sec))
 
+    fun value(value: Int) = execute(DeviceCommand.value(deviceName, deviceRepository, value))
+
     private fun execute(command: DeviceCommand) {
         mqtt.publish(HomeService.IN_TOPIC, command.mqttMessage().toString())
 

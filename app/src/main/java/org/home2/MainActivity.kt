@@ -23,6 +23,7 @@ private const val TEMP_SENSOR_NAME_03 = "temp_sensor_03"
 private const val HUMIDITY_SENSOR_NAME_03 = "humidity_sensor_03"
 const val CAMERA_NAME_01 = "camera_01"
 const val CAMERA_NAME_02 = "camera_02"
+const val MAIN_LIGHT_NAME = "main_light"
 
 class MainActivity : FragmentActivity() {
     companion object {
@@ -44,6 +45,8 @@ class MainActivity : FragmentActivity() {
 
     private lateinit var cameraO1View: CameraView
     private lateinit var cameraO2View: CameraView
+
+    private lateinit var mainLightView: LightView
 
     private lateinit var connectionStatusView: TextView
 
@@ -84,6 +87,25 @@ class MainActivity : FragmentActivity() {
         }
     }
 
+    private val mainLightListener = object : LightView.Listener {
+        override fun switchOn(name: String) {
+            service?.device(name)?.on()
+        }
+
+        override fun switchOff(name: String) {
+            service?.device(name)?.off()
+        }
+
+        override fun setValue(name: String, value: Int) {
+            service?.device(name)?.value(value)
+        }
+
+        override fun update(name: String) {
+            service?.device(name)?.state()
+        }
+
+    }
+
     private val serviceConnection = object : ServiceConnection {
         override fun onServiceDisconnected(name: ComponentName?) {
             service = null
@@ -105,6 +127,7 @@ class MainActivity : FragmentActivity() {
             service!!.observe(HUMIDITY_SENSOR_NAME_03, this@MainActivity, hum03View)
             service!!.observeCamera(CAMERA_NAME_01, this@MainActivity, cameraO1View)
             service!!.observeCamera(CAMERA_NAME_02, this@MainActivity, cameraO2View)
+            service!!.observe(MAIN_LIGHT_NAME, this@MainActivity, mainLightView)
 
             service!!.device(HomeService.DEVICE_NAME_ALL).state()
 
@@ -127,6 +150,8 @@ class MainActivity : FragmentActivity() {
         motionSensor02View = findViewById(R.id.motion_sensor_02)
         cameraO1View = findViewById(R.id.camera_01)
         cameraO2View = findViewById(R.id.camera_02)
+        mainLightView = findViewById(R.id.main_light)
+
         connectionStatusView = findViewById(R.id.connection_status)
 
         notificationController = applicationContext.notificationController
@@ -169,6 +194,9 @@ class MainActivity : FragmentActivity() {
 
         cameraO2View.name = CAMERA_NAME_02
         cameraO2View.listener = cameraListener
+
+        mainLightView.name = MAIN_LIGHT_NAME
+        mainLightView.listener = mainLightListener
 
         val homeService = Intent(this, HomeService::class.java)
         bindService(homeService, serviceConnection, Context.BIND_AUTO_CREATE)
