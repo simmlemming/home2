@@ -16,7 +16,18 @@
         <org.home2.LightView
             android:id="@+id/main_light"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:background="@drawable/white_rounded_rectangle"
+            android:elevation="4dp" />
+
+        <org.home2.WakeupLightView
+            android:id="@+id/wakeup_light_01"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:background="@drawable/white_rounded_rectangle"
+            android:elevation="4dp" />
 
         <org.home2.CameraView
             android:id="@+id/camera_01"
@@ -39,7 +50,8 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="16dp"
             android:background="@drawable/white_rounded_rectangle"
-            android:elevation="4dp" />
+            android:elevation="4dp"
+            android:visibility="gone" />
 
         <org.home2.ValueView
             android:id="@+id/hum_01"
@@ -47,7 +59,8 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="16dp"
             android:background="@drawable/white_rounded_rectangle"
-            android:elevation="4dp" />
+            android:elevation="4dp"
+            android:visibility="gone" />
 
         <org.home2.ValueView
             android:id="@+id/temp_02"

@@ -16,6 +16,7 @@ class DeviceRepository {
         put("motion_sensor_01", DeviceInfo.nameOnly("motion_sensor_01", "living_room"))
         put("motion_sensor_02", DeviceInfo.nameOnly("motion_sensor_02", "corridor"))
         put("main_light", DeviceInfo.nameOnly("main_light", "living_room"))
+        put("wakeup_light_01", DeviceInfo.nameOnly("wakeup_light_01", "brown_bedroom"))
     }
 
     fun find(name: String) = find { device -> name == HomeService.DEVICE_NAME_ALL || device.name == name }

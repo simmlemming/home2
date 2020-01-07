@@ -24,6 +24,7 @@ private const val HUMIDITY_SENSOR_NAME_03 = "humidity_sensor_03"
 const val CAMERA_NAME_01 = "camera_01"
 const val CAMERA_NAME_02 = "camera_02"
 const val MAIN_LIGHT_NAME = "main_light"
+const val WAKEUP_LIGHT_NAME_01 = "wakeup_light_01"
 
 class MainActivity : FragmentActivity() {
     companion object {
@@ -47,6 +48,7 @@ class MainActivity : FragmentActivity() {
     private lateinit var cameraO2View: CameraView
 
     private lateinit var mainLightView: LightView
+    private lateinit var wakeupLight01View: WakeupLightView
 
     private lateinit var connectionStatusView: TextView
 
@@ -128,6 +130,7 @@ class MainActivity : FragmentActivity() {
             service!!.observeCamera(CAMERA_NAME_01, this@MainActivity, cameraO1View)
             service!!.observeCamera(CAMERA_NAME_02, this@MainActivity, cameraO2View)
             service!!.observe(MAIN_LIGHT_NAME, this@MainActivity, mainLightView)
+            service!!.observe(WAKEUP_LIGHT_NAME_01, this@MainActivity, wakeupLight01View)
 
             service!!.device(HomeService.DEVICE_NAME_ALL).state()
 
@@ -151,6 +154,7 @@ class MainActivity : FragmentActivity() {
         cameraO1View = findViewById(R.id.camera_01)
         cameraO2View = findViewById(R.id.camera_02)
         mainLightView = findViewById(R.id.main_light)
+        wakeupLight01View = findViewById(R.id.wakeup_light_01)
 
         connectionStatusView = findViewById(R.id.connection_status)
 
@@ -197,6 +201,9 @@ class MainActivity : FragmentActivity() {
 
         mainLightView.name = MAIN_LIGHT_NAME
         mainLightView.listener = mainLightListener
+
+        wakeupLight01View.name = WAKEUP_LIGHT_NAME_01
+//        mainLightView.listener = mainLightListener
 
         val homeService = Intent(this, HomeService::class.java)
         bindService(homeService, serviceConnection, Context.BIND_AUTO_CREATE)
