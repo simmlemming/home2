@@ -6,6 +6,8 @@ import android.view.View
 import android.widget.Button
 import android.widget.SeekBar
 import android.widget.TextView
+import java.text.SimpleDateFormat
+import java.util.*
 
 /**
  * Created by mtkachenko on 21/10/17.
@@ -23,7 +25,10 @@ class WakeupLightView @JvmOverloads constructor(context: Context, attributeSet: 
     private lateinit var onOffView: Button
     private lateinit var valueView: SeekBar
     private lateinit var valueTextView: TextView
+    private lateinit var currentTimeView: TextView
+    private lateinit var wakeupTimeView: TextView
 
+    private val currentTimeFormatter = SimpleDateFormat("HH:mm:ss dd/MM/yy", Locale.getDefault())
 
     private val switchOnListener = SwitchOnOnClickListener()
     private val switchOffListener = SwitchOffOnClickListener()
@@ -38,6 +43,8 @@ class WakeupLightView @JvmOverloads constructor(context: Context, attributeSet: 
         onOffView = findViewById(R.id.on_off)
         valueView = findViewById(R.id.value)
         valueTextView = findViewById(R.id.value_txt)
+        currentTimeView = findViewById(R.id.current_time)
+        wakeupTimeView = findViewById(R.id.wakeup_time)
 
         onOffView.setOnClickListener { _ ->
             listener?.switchOn(name)
@@ -75,6 +82,9 @@ class WakeupLightView @JvmOverloads constructor(context: Context, attributeSet: 
         }
 
         valueView.progress = info?.data?.value ?: 0
+
+        val currentTimeText = if (info?.data?.timeUnixS == null) "-" else currentTimeFormatter.format(Date(info.data.timeUnixS))
+        currentTimeView.text = currentTimeText
     }
 
     private inner class SwitchOnOnClickListener : OnClickListener {

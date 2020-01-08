@@ -57,6 +57,9 @@ class Mqtt(app: HomeApplication) : BaseMqtt() {
                 .forEach { timer!!.scheduleAtFixedRate(HumSensorUpdates(it), rand.nextInt(1000).toLong(), 1000L) }
 
 //        timer!!.scheduleAtFixedRate(MotionSensorUpdates("motion_sensor_01"), 0, 2000L)
+        timer!!.scheduleAtFixedRate(WakeupLightUpdate(), 0, 1000L)
+
+
     }
 
     override fun disconnect() {
@@ -107,6 +110,21 @@ class Mqtt(app: HomeApplication) : BaseMqtt() {
     private inner class HumSensorUpdates(deviceInfo: DeviceInfo) : TempSensorUpdates(deviceInfo) {
         override fun newValue() = rand.nextInt(30) + 30
         override fun newSignal() = -73
+    }
+
+    private inner class WakeupLightUpdate : TimerTask() {
+        override fun run() {
+            val update = JSONObject()
+            update.put("name", "wakeup_light_01")
+            update.put("room", "brown_bedroom")
+            update.put("signal", -81)
+            update.put("type", "wakeup_light")
+            update.put("state", DeviceInfo.STATE_OK)
+            update.put("time", Calendar.getInstance().timeInMillis / 1000)
+
+            val message = MqttMessage(update.toString().toByteArray())
+            subscribeListener.messageArrived("home/out", message)
+        }
     }
 
     private inner class MotionSensorUpdates(val deviceName: String) : TimerTask() {

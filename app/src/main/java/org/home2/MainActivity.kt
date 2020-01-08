@@ -108,6 +108,21 @@ class MainActivity : FragmentActivity() {
 
     }
 
+    private val wakeupLightListener = object : WakeupLightView.Listener {
+        override fun switchOn(name: String) {
+        }
+
+        override fun switchOff(name: String) {
+        }
+
+        override fun setValue(name: String, value: Int) {
+        }
+
+        override fun update(name: String) {
+            service?.device(name)?.state()
+        }
+    }
+
     private val serviceConnection = object : ServiceConnection {
         override fun onServiceDisconnected(name: ComponentName?) {
             service = null
@@ -203,7 +218,7 @@ class MainActivity : FragmentActivity() {
         mainLightView.listener = mainLightListener
 
         wakeupLight01View.name = WAKEUP_LIGHT_NAME_01
-//        mainLightView.listener = mainLightListener
+        wakeupLight01View.listener = wakeupLightListener
 
         val homeService = Intent(this, HomeService::class.java)
         bindService(homeService, serviceConnection, Context.BIND_AUTO_CREATE)
