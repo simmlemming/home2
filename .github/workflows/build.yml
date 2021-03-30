@@ -41,4 +41,4 @@ jobs:
       - name: Upload apk
         uses: actions/checkout@v2
         with:
-          path: ./app/build/outputs/apk/**/*.apk
+          path: ./app/build/outputs/apk/mocked/debug/app-mocked-debug.apk
