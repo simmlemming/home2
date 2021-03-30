@@ -35,5 +35,5 @@ jobs:
 
       - name: Upload apk
         uses: actions/checkout@v2
-          with:
-            - path: ./app/build/outputs/apk/**/*.apk
+        with:
+          - path: ./app/build/outputs/apk/**/*.apk
