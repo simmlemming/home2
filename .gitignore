@@ -8,4 +8,4 @@
 /captures
 .externalNativeBuild
 .idea
-# app/src/real/java/org/home2/mqtt/MqttConfig.kt
+app/src/real/java/org/home2/mqtt/MqttConfig.kt
