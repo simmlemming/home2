@@ -33,6 +33,11 @@ jobs:
         with:
           files: ./app/build/test-results/testMockedDebugUnitTest/*.xml
 
+      - name: Look around
+        run: |
+          pwd
+          find . -iname *.apk
+        
       - name: Upload apk
         uses: actions/checkout@v2
         with:
