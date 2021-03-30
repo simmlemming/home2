@@ -6,28 +6,26 @@ import org.jetbrains.annotations.NotNull;
 import org.junit.Before;
 import org.junit.Test;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
 import kotlin.Unit;
 import kotlin.jvm.functions.Function1;
 
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyString;
-import static org.mockito.ArgumentMatchers.eq;
-import static org.mockito.Mockito.never;
-import static org.mockito.Mockito.spy;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
+import static org.junit.Assert.assertEquals;
 
 /**
  * Created by mtkachenko on 23/10/17.
  */
 
 public class BaseMqttTest {
-    private BaseMqtt mqtt;
+    private MqttUnderTest mqtt;
     private Function1<String, Unit> listener1, listener2, listener3;
 
     @Before
     public void setUp() {
-        mqtt = spy(new MqttUnderTest());
+        mqtt = new MqttUnderTest();
         listener1 = newListener();
         listener2 = newListener();
         listener3 = newListener();
@@ -36,40 +34,35 @@ public class BaseMqttTest {
     @Test
     public void test_subscribeCalls() {
         mqtt.subscribe("a", listener1);
-        verify(mqtt, times(1)).subscribeInner(eq("a"), any(IMqttMessageListener.class));
-
         mqtt.subscribe("a", listener2);
-        verify(mqtt, times(1)).subscribeInner(eq("a"), any(IMqttMessageListener.class));
-
         mqtt.subscribe("b", listener3);
-        verify(mqtt, times(1)).subscribeInner(eq("b"), any(IMqttMessageListener.class));
+        mqtt.subscribe("a", listener2);
+
+        List<String> expectedSubscribeTopics = Arrays.asList("a", "b");
+        assertEquals(expectedSubscribeTopics, mqtt.subscribeTopics);
     }
 
     @Test
     public void test_unsubscribeCalls() {
         mqtt.unsubscribe("a", listener1);
-        verify(mqtt, never()).subscribeInner(anyString(), any(IMqttMessageListener.class));
-
         mqtt.subscribe("a", listener1);
         mqtt.subscribe("a", listener2);
-
         mqtt.unsubscribe("a", listener1);
-        verify(mqtt, never()).unsubscribeInner(eq("a"));
-
         mqtt.unsubscribe("a", listener3);
-        verify(mqtt, never()).unsubscribeInner(eq("a"));
-
         mqtt.unsubscribe("a", listener2);
-        verify(mqtt, times(1)).unsubscribeInner(eq("a"));
+
+        List<String> expectedUnsubscribeTopics = Arrays.asList("a");
+        assertEquals(expectedUnsubscribeTopics, mqtt.subscribeTopics);
     }
 
     @Test
     public void test_subscribeAfterUnsubscribe() {
         mqtt.subscribe("a", listener1);
         mqtt.unsubscribe("a", listener1);
-
         mqtt.subscribe("a", listener2);
-        verify(mqtt, times(2)).subscribeInner(eq("a"), any(IMqttMessageListener.class));
+
+        List<String> expectedSubscribeTopics = Arrays.asList("a", "a");
+        assertEquals(expectedSubscribeTopics, mqtt.subscribeTopics);
     }
 
     private Function1<String, Unit> newListener() {
@@ -82,18 +75,18 @@ public class BaseMqttTest {
     }
 
     public static class MqttUnderTest extends BaseMqtt {
-        String subscribeTopic = null;
-        String unsubscribeTopic = null;
+        List<String> subscribeTopics = new ArrayList<>();
+        List<String> unsubscribeTopics = new ArrayList<>();
 
         @Override
         protected void subscribeInner(@NotNull String topic, @NotNull IMqttMessageListener listener) {
-            subscribeTopic = topic;
+            subscribeTopics.add(topic);
 
         }
 
         @Override
         protected void unsubscribeInner(@NotNull String topic) {
-            unsubscribeTopic = topic;
+            unsubscribeTopics.add(topic);
         }
 
         @Override
