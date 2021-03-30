@@ -32,3 +32,8 @@ jobs:
         if: always()
         with:
           files: ./app/build/test-results/testMockedDebugUnitTest/*.xml
+
+      - name: Upload apk
+        uses: actions/checkout@v2
+          with:
+            - path: ./app/build/outputs/apk/**/*.apk
