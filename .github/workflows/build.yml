@@ -41,5 +41,4 @@ jobs:
       - name: Upload apk
         uses: actions/upload-artifact@v2
         with:
-          name: mocked-debug.apk
-          path: ./app/build/outputs/apk/mocked/debug/app-mocked-debug.apk
+          path: ./app/build/outputs/apk/**/*.apk
